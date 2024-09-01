@@ -1,13 +1,26 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { FileBox, ShoppingCart, Tag, Calendar } from 'lucide-react';
 import ActivityFeed from '../features/dashboard/ActivityFeed';
 import DonutChart from "@/components/ui/DonutChart"
 import FeedItem from '../features/dashboard/FeedItem';
+import { useDispatch, useSelector } from 'react-redux';
+import { getDashboardData } from '../features/dashboard/dashboardSlice';
+
 const Dashboard = () => {
+    const dispatch = useDispatch()
+    const { data, loading, error } = useSelector((state) => state.dashboard);
+    useEffect(() => {
+        // Dispatch the action to load dashboard data when component mounts
+        dispatch(getDashboardData());
+    }, [dispatch]);
+    console.log(data)
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>Error loading data: {error.message}</div>;
     return (
         <>
             <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <pre>{JSON.stringify(data, null, 2)}</pre>
                 {/* Card 1: Tasks Due Today */}
                 <Card className="bg-blue-100 dark:bg-blue-900">
                     <CardHeader>
@@ -108,7 +121,7 @@ const Dashboard = () => {
                         <FeedItem />
                     </div>
                 </div >
-                <div className="w-1/4">
+                <div className="w-1/4 min-h-80">
                     <ActivityFeed />
                 </div>
             </div>

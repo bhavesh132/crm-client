@@ -28,7 +28,7 @@ const Login = () => {
                 username, password
             }
             dispatch(loginUser(userCredentials)).then((result) => {
-                console.log(result)
+                // console.log(result)
                 if (result.payload) {
                     setAlert({
                         type: 'success',
@@ -85,7 +85,7 @@ const Login = () => {
                             onChange={(e) => setPassword(e.target.value)}
                         />
                     </div>
-                    <Button
+                    <Button type='submit'
                         className="w-full bg-red-600 hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600 text-white font-semibold py-2 rounded-lg transition"
                         onClick={handleLogin}
                     >

@@ -1,11 +1,19 @@
 import { clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
+import axios from "axios"
 
 export function cn(...inputs) {
   return twMerge(clsx(inputs))
 }
 
-export const hostname = 'http://127.0.0.1:8000/api/'
+const token = JSON.parse(localStorage.getItem('token'))
+export const axiosInstance = axios.create({
+  baseURL: 'http://127.0.0.1:8000/api/', // Replace with your API base URL
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': `Token ${token}`,
+  },
+});
 
 export const deleteAllCookies = () => {
   const cookies = document.cookie.split(";");

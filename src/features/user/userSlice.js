@@ -1,33 +1,41 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
-import { hostname, deleteAllCookies } from "../../lib/utils";
+
+import { axiosInstance } from "../../lib/utils";
+import Cookies from "js-cookie";
 
 export const loginUser = createAsyncThunk(
     'user/loginUser',
     async (userCredentials) => {
-        const request = await axios.post(`${hostname}auth/login/`, userCredentials, { withCredentials: true })
+        const request = await axiosInstance.post(`auth/login/`, userCredentials)
         const response = await request.data
         localStorage.setItem('user', JSON.stringify(response.user))
+        localStorage.setItem('token', JSON.stringify(response.token))
+        // console.log(response)
+        const authToken = response.token;
+        Cookies.set('auth_token', authToken, { sameSite: 'Lax', secure: true });
         return response
     }
 )
 
 export const logoutUser = createAsyncThunk(
     'user/logoutUser',
-    async (_, thunkApi) => {
-        try {
-            const response = await axios.post(`${hostname}auth/logout/`, user)
-            return response.data
-        } catch {
-            thunkApi.rejectWithValue(error.response.data);
-        }
-
+    async () => {
+        const token = JSON.parse(localStorage.getItem('token'))
+        const request = await axiosInstance.post(`auth/logout/`, {}, {
+            headers: {
+                'Authorization': `Token ${token}`,
+            }
+        })
+        const response = await request.data
+        Cookies.remove('auth_token')
+        return response
     }
 )
 
 
 const initialState = {
     user: null,
+    isAuthenticated: false,
     error: null,
     loading: false
 }
@@ -49,6 +57,7 @@ export const userSlice = createSlice({
                 state.loading = false
                 state.error = null
                 state.user = action.payload
+                state.isAuthenticated = true
             })
             .addCase(loginUser.rejected, (state, action) => {
                 state.loading = false
@@ -61,6 +70,7 @@ export const userSlice = createSlice({
             })
             .addCase(logoutUser.fulfilled, (state) => {
                 state.loading = false
+                state.isAuthenticated = false
                 state.error = null
                 state.user = null
             })

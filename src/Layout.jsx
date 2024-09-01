@@ -2,7 +2,7 @@ import React from 'react'
 import { Outlet, useNavigate } from 'react-router'
 import { Link } from "react-router-dom"
 import { logoutUser } from './features/user/userSlice';
-
+import Cookies from 'js-cookie';
 import {
     Tag,
     CircleUser,
@@ -193,12 +193,18 @@ const sidebarItems = [
 const Layout = () => {
     const [active, setActive] = useState('dashboard')
     const [item, setItem] = useState("Ticket")
+    const user = JSON.parse(localStorage.getItem('user'))
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const handleLogout = async () => {
+        const user = localStorage.getItem('user')
+        const token = localStorage.getItem('token')
+        const auth_token = Cookies.get('auth_token')
         try {
-            await dispatch(logoutUser()).then(() => {
+            await dispatch(logoutUser(user, token, auth_token)).then((result) => {
+
                 localStorage.removeItem('user')
+                localStorage.removeItem('token')
                 navigate('/login')
             })
             // Redirect to login page after logout
@@ -293,7 +299,7 @@ const Layout = () => {
                     </div>
 
                     <div className=''>
-                        Hello, Bruce!
+                        Hello, {user.first_name}
                     </div>
 
                     <div className="flex-shrink-0">
