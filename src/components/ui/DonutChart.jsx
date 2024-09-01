@@ -1,45 +1,51 @@
-import { useMemo } from "react"
-import { Label, Pie, PieChart } from "recharts"
-
+import { Label, Pie, Cell, PieChart } from "recharts"
 import {
-
     ChartContainer,
     ChartTooltip,
     ChartTooltipContent,
 } from "@/components/ui/chart"
-const chartData = [
-    { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
-    { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
-    { browser: "firefox", visitors: 287, fill: "var(--color-firefox)" },
-    { browser: "edge", visitors: 173, fill: "var(--color-edge)" },
-    { browser: "other", visitors: 190, fill: "var(--color-other)" },
-]
+
 const chartConfig = {
-    visitors: {
-        label: "Visitors",
-    },
-    chrome: {
-        label: "Chrome",
+    open: {
+        label: "Open",
         color: "hsl(var(--chart-1))",
     },
-    safari: {
-        label: "Safari",
+    critical: {
+        label: "Critical",
         color: "hsl(var(--chart-2))",
     },
-    firefox: {
-        label: "Firefox",
+    due: {
+        label: "Due",
         color: "hsl(var(--chart-3))",
     },
-    edge: {
-        label: "Edge",
+    assigned: {
+        label: "Assigned",
         color: "hsl(var(--chart-4))",
     },
-    other: {
-        label: "Other",
+    nonCritical: {
+        label: "Non-critical",
         color: "hsl(var(--chart-5))",
     },
+    new: {
+        label: "New",
+        color: "hsl(var(--chart-6))",
+    },
+    total: {
+        label: "Total",
+        color: "hsl(var(--chart-7))",
+    },
+    upcoming: {
+        label: "Upcoming",
+        color: "hsl(var(--chart-8))",
+    },
 }
-export function DonutChart() {
+export function DonutChart({ data, totalData, title }) {
+    if (!Array.isArray(data)) {
+        console.error('Expected data to be an array but received:', data);
+        return null;
+    }
+    const COLORS = ['hsl(var(--chart-1))', 'hsl(var(--chart-2))', 'hsl(var(--chart-3))', 'hsl(var(--chart-4))', 'hsl(var(--chart-5))'];
+    console.log(totalData)
     return (
         <ChartContainer
             config={chartConfig}
@@ -51,12 +57,18 @@ export function DonutChart() {
                     content={<ChartTooltipContent hideLabel />}
                 />
                 <Pie
-                    data={chartData}
-                    dataKey="visitors"
-                    nameKey="browser"
+                    data={data}
+                    dataKey="value"
+                    nameKey="name"
                     innerRadius={50}
                     strokeWidth={5}
                 >
+                    {
+                        data.map((value, index) => {
+                            return (<Cell key={`cell-${index}`
+                            } fill={COLORS[index % COLORS.length]} />)
+                        })
+                    }
                     <Label
                         content={({ viewBox }) => {
                             if (viewBox && "cx" in viewBox && "cy" in viewBox) {
@@ -72,14 +84,14 @@ export function DonutChart() {
                                             y={viewBox.cy}
                                             className="fill-foreground text-2xl font-bold"
                                         >
-                                            12
+                                            {totalData[title.toLowerCase()]}
                                         </tspan>
                                         <tspan
                                             x={viewBox.cx}
                                             y={(viewBox.cy || 0) + 24}
                                             className="fill-muted-foreground"
                                         >
-                                            Total Tasks
+                                            {title}
                                         </tspan>
                                     </text>
                                 )
@@ -89,7 +101,7 @@ export function DonutChart() {
                 </Pie>
             </PieChart>
         </ChartContainer>
-    )
+    );
 }
 
 export default DonutChart
