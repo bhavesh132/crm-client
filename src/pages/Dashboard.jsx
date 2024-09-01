@@ -1,8 +1,9 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { FileBox, ShoppingCart, Tag, Calendar } from 'lucide-react';
-import ActivityFeed from '../features/ActivityFeed';
+import ActivityFeed from '../features/dashboard/ActivityFeed';
 import DonutChart from "@/components/ui/DonutChart"
+import FeedItem from '../features/dashboard/FeedItem';
 const Dashboard = () => {
     return (
         <>
@@ -18,7 +19,7 @@ const Dashboard = () => {
                     <CardContent>
                         <DonutChart />
                     </CardContent>
-                    <CardFooter className="flex-col gap-1 text-sm">
+                    <CardFooter className="flex-col gap-1 mt-4 text-sm">
                         <div className="flex items-center gap-2 font-medium leading-none">
                             Trending up by 5.2% this month
                         </div>
@@ -39,7 +40,7 @@ const Dashboard = () => {
                     <CardContent>
                         <DonutChart />
                     </CardContent>
-                    <CardFooter className="flex-col gap-1 text-sm">
+                    <CardFooter className="flex-col gap-1 mt-4 text-sm">
                         <div className="flex items-center gap-2 font-medium leading-none">
                             Trending up by 5.2% this month
                         </div>
@@ -60,7 +61,7 @@ const Dashboard = () => {
                     <CardContent>
                         <DonutChart />
                     </CardContent>
-                    <CardFooter className="flex-col gap-1 text-sm">
+                    <CardFooter className="flex-col gap-1 mt-4 text-sm">
                         <div className="flex items-center gap-2 font-medium leading-none">
                             Trending up by 5.2% this month
                         </div>
@@ -81,7 +82,7 @@ const Dashboard = () => {
                     <CardContent>
                         <DonutChart />
                     </CardContent>
-                    <CardFooter className="flex-col gap-1 text-sm">
+                    <CardFooter className="flex-col gap-1 mt-4 text-sm">
                         <div className="flex items-center gap-2 font-medium leading-none">
                             Trending up by 5.2% this month
                         </div>
@@ -92,13 +93,22 @@ const Dashboard = () => {
                 </Card>
             </div>
             <div className='flex flex-row flex-wrap w-full mt-2'>
-                <div className="w-2/3 min-w-96 mr-28">
-                    <h2 className="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-200">Performance Overview</h2>
-                    <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
-                        {/* Insert your chart component here, ensuring it adapts to theme colors */}
+                <div className="w-2/3 mr-12 min-h-80">
+                    <h2 className="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-200">News Feed</h2>
+                    <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow h-full max-h-96 overflow-y-auto flex flex-wrap">
+                        <FeedItem />
+                        <FeedItem />
+                        <FeedItem />
+                        <FeedItem />
+                        <FeedItem />
+                        <FeedItem />
+                        <FeedItem />
+                        <FeedItem />
+                        <FeedItem />
+                        <FeedItem />
                     </div>
                 </div >
-                <div className=" w-1/4">
+                <div className="w-1/4">
                     <ActivityFeed />
                 </div>
             </div>

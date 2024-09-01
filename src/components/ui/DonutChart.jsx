@@ -1,14 +1,6 @@
 import { useMemo } from "react"
-import { TrendingUp } from "lucide-react"
 import { Label, Pie, PieChart } from "recharts"
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card"
+
 import {
 
     ChartContainer,
@@ -48,13 +40,10 @@ const chartConfig = {
     },
 }
 export function DonutChart() {
-    const totalVisitors = useMemo(() => {
-        return chartData.reduce((acc, curr) => acc + curr.visitors, 0)
-    }, [])
     return (
         <ChartContainer
             config={chartConfig}
-            className="mx-auto -my-12 aspect-square max-h-[250px]"
+            className="mx-auto -my-12 aspect-square max-h-[170px]"
         >
             <PieChart>
                 <ChartTooltip
@@ -65,7 +54,7 @@ export function DonutChart() {
                     data={chartData}
                     dataKey="visitors"
                     nameKey="browser"
-                    innerRadius={60}
+                    innerRadius={50}
                     strokeWidth={5}
                 >
                     <Label
@@ -81,7 +70,7 @@ export function DonutChart() {
                                         <tspan
                                             x={viewBox.cx}
                                             y={viewBox.cy}
-                                            className="fill-foreground text-3xl font-bold"
+                                            className="fill-foreground text-2xl font-bold"
                                         >
                                             12
                                         </tspan>

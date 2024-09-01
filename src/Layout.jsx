@@ -1,7 +1,8 @@
 import React from 'react'
-import { Outlet } from 'react-router'
-
+import { Outlet, useNavigate } from 'react-router'
 import { Link } from "react-router-dom"
+import { logoutUser } from './features/user/userSlice';
+
 import {
     Tag,
     CircleUser,
@@ -16,7 +17,8 @@ import {
     BookUser,
     Ticket,
     FileBox,
-    ChartLine
+    ChartLine,
+    Rss
 } from "lucide-react"
 import Logo from './components/ui/LogoCrm.svg'
 import { Button } from "@/components/ui/button"
@@ -34,10 +36,13 @@ import {
 import { Input } from "@/components/ui/input"
 import { useState } from "react"
 import { useTheme } from "@/components/themeProvider"
+import { useDispatch } from 'react-redux'
 
 
 export function ModeToggle() {
     const { setTheme } = useTheme()
+
+
 
     return (
         <DropdownMenu>
@@ -65,99 +70,122 @@ export function ModeToggle() {
 
 const sidebarItems = [
     {
+        id: 1,
         name: 'Dashboard',
         link: '/dashboard',
         icon: <Home className="h-4 w-4" />,
         type: 'link'
     },
     {
+        id: 2,
         name: 'Customers',
         link: '',
         icon: null,
         type: 'heading'
     },
     {
+        id: 3,
         name: 'Contacts',
         link: '/dashboard',
         icon: <BookUser className="h-4 w-4" />,
         type: 'link'
     },
     {
+        id: 4,
         name: 'Companies',
         link: '/dashboard',
         icon: <Building2 className="h-4 w-4" />,
         type: 'link'
     },
     {
+        id: 5,
         name: 'Service Desk',
         link: '',
         icon: null,
         type: 'heading'
     },
     {
+        id: 6,
         name: 'Tickets',
         link: '/dashboard',
         icon: <Ticket className="h-4 w-4" />,
         type: 'link'
     },
     {
+        id: 7,
         name: 'Tasks',
         link: '/dashboard',
         icon: <LayoutList className="h-4 w-4" />,
         type: 'link'
     },
     {
+        id: 8,
         name: 'Sales',
         link: '',
         icon: null,
         type: 'heading'
     },
     {
+        id: 9,
         name: 'Opportunities',
         link: '/dashboard',
         icon: <ShoppingCart className="h-4 w-4" />,
         type: 'link'
     },
     {
+        id: 10,
         name: 'Campaigns',
         link: '/dashboard',
         icon: <CalendarClock className="h-4 w-4" />,
         type: 'link'
     },
     {
+        id: 11,
         name: 'Admin Panel',
         link: '',
         icon: null,
         type: 'heading'
     },
     {
+        id: 12,
         name: 'Users',
         link: '/dashboard',
         icon: <ContactRound className="h-4 w-4" />,
         type: 'link'
     },
     {
+        id: 13,
         name: 'Groups',
         link: '/dashboard',
         icon: <UsersRound className="h-4 w-4" />,
         type: 'link'
     },
     {
+        id: 14,
         name: 'Types',
         link: '/dashboard',
         icon: <Tag className="h-4 w-4" />,
         type: 'link'
     },
     {
+        id: 15,
         name: 'Sub Types',
         link: '/dashboard',
         icon: <FileBox className="h-4 w-4" />,
         type: 'link'
     },
     {
+        id: 16,
         name: 'Analytics',
         link: '/dashboard',
         icon: <ChartLine className="h-4 w-4" />,
+        type: 'link'
+    },
+    {
+        id: 17,
+        name: 'News Feed',
+        link: '/dashboard',
+        icon: <Rss className="h-4 w-4" />,
         type: 'link'
     },
 ]
@@ -165,6 +193,22 @@ const sidebarItems = [
 const Layout = () => {
     const [active, setActive] = useState('dashboard')
     const [item, setItem] = useState("Ticket")
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+    const handleLogout = async () => {
+        try {
+            await dispatch(logoutUser()).then(() => {
+                localStorage.removeItem('user')
+                navigate('/login')
+            })
+            // Redirect to login page after logout
+        } catch (error) {
+            console.log('Logout failed: ', error);
+            // Optional: Show an error alert if logout fails
+        }
+
+    }
+
 
     return (
         <div className="grid min-h-screen h-fit w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
@@ -178,17 +222,16 @@ const Layout = () => {
                     </div>
                     <div className="flex-1 overflow-y-auto ">
                         <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
-                            {sidebarItems.map(({ name, link, icon, type }) => {
+                            {sidebarItems.map(({ id, name, link, icon, type }) => {
                                 const lctext = (str) => {
                                     str = str.replace(/\s/g, '')
                                     return str.toLowerCase();
                                 }
                                 if (type === "link") {
                                     return (
-                                        <Link
+                                        <Link key={id}
                                             to={link}
                                             onClick={() => {
-                                                navi
                                                 setActive(lctext(name))
                                             }}
                                             className={lctext(name) === active ?
@@ -202,7 +245,7 @@ const Layout = () => {
                                     )
                                 } if (type === 'heading') {
                                     return (
-                                        <div className="flex h-10 items-center border-b px-4 lg:h-[60px] lg:px-6">
+                                        <div key={id} className="flex h-10 items-center border-b px-4 lg:h-[60px] lg:px-6">
                                             {name}
                                         </div>
                                     )
@@ -230,6 +273,8 @@ const Layout = () => {
                                         <DropdownMenuRadioItem value="Ticket">Ticket</DropdownMenuRadioItem>
                                         <DropdownMenuRadioItem value="Customer">Customer</DropdownMenuRadioItem>
                                         <DropdownMenuRadioItem value="Company">Company</DropdownMenuRadioItem>
+                                        <DropdownMenuRadioItem value="Opportuninty">Opportunity</DropdownMenuRadioItem>
+                                        <DropdownMenuRadioItem value="Campaign">Campaign</DropdownMenuRadioItem>
                                     </DropdownMenuRadioGroup>
                                 </DropdownMenuContent>
                             </DropdownMenu>
@@ -247,6 +292,10 @@ const Layout = () => {
                         </div>
                     </div>
 
+                    <div className=''>
+                        Hello, Bruce!
+                    </div>
+
                     <div className="flex-shrink-0">
                         <ModeToggle />
                     </div>
@@ -261,7 +310,7 @@ const Layout = () => {
                             <DropdownMenuLabel>My Account</DropdownMenuLabel>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem>Settings</DropdownMenuItem>
-                            <DropdownMenuItem>Logout</DropdownMenuItem>
+                            <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </header>
