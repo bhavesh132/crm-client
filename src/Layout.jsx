@@ -3,6 +3,7 @@ import { Outlet, useNavigate } from 'react-router'
 import { Link } from "react-router-dom"
 import { logoutUser } from './features/user/userSlice';
 import Cookies from 'js-cookie';
+import { useLocation } from 'react-router';
 import {
     Tag,
     CircleUser,
@@ -34,7 +35,7 @@ import {
     DropdownMenuRadioItem
 } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useTheme } from "@/components/themeProvider"
 import { useDispatch } from 'react-redux'
 
@@ -86,7 +87,7 @@ const sidebarItems = [
     {
         id: 3,
         name: 'Contacts',
-        link: '/dashboard',
+        link: '/contact',
         icon: <BookUser className="h-4 w-4" />,
         type: 'link'
     },
@@ -191,7 +192,9 @@ const sidebarItems = [
 ]
 
 const Layout = () => {
-    const [active, setActive] = useState('dashboard')
+    const location = useLocation();
+    const link = location.pathname.substring(location.pathname.indexOf('/'));
+    const [active, setActive] = useState(link)
     const [item, setItem] = useState("Ticket")
     const user = JSON.parse(localStorage.getItem('user'))
     const dispatch = useDispatch()
@@ -206,6 +209,7 @@ const Layout = () => {
                 localStorage.removeItem('user')
                 localStorage.removeItem('token')
                 navigate('/login')
+                window.location.reload(true);
             })
             // Redirect to login page after logout
         } catch (error) {
@@ -215,55 +219,78 @@ const Layout = () => {
 
     }
 
+    const [isScrolled, setIsScrolled] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            // Check if the page is scrolled by more than 50px (or any threshold you prefer)
+            if (window.scrollY > 50) {
+                setIsScrolled(true);
+            } else {
+                setIsScrolled(false);
+            }
+        };
+
+        // Add event listener for scroll
+        window.addEventListener("scroll", handleScroll);
+
+        // Clean up the event listener when component unmounts
+        return () => {
+            window.removeEventListener("scroll", handleScroll);
+        };
+    }, []);
 
     return (
-        <div className="grid min-h-screen h-fit w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
-            <div className="hidden border-r bg-muted/40 md:block">
-                <div className="flex h-full max-h-screen flex-col gap-2">
+        <div className="min-h-screen w-full">
+            {/* Sidebar */}
+            <div className="hidden border-r bg-muted/40 md:block w-[220px] lg:w-[280px] h-screen fixed left-0 top-0">
+                <div className="flex flex-col h-full gap-2">
                     <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
                         <Link href="/" className="flex items-center gap-2 font-semibold">
                             <img src={Logo} className="h-8" />
                             <span className="text-lg font-semibold">BrightPath</span>
                         </Link>
                     </div>
-                    <div className="flex-1 overflow-y-auto ">
+                    <div className="flex-1 overflow-y-auto">
                         <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
                             {sidebarItems.map(({ id, name, link, icon, type }) => {
-                                const lctext = (str) => {
-                                    str = str.replace(/\s/g, '')
-                                    return str.toLowerCase();
-                                }
+                                const lctext = (str) => str.replace(/\s/g, '').toLowerCase();
                                 if (type === "link") {
                                     return (
-                                        <Link key={id}
+                                        <Link
+                                            key={id}
                                             to={link}
-                                            onClick={() => {
-                                                setActive(lctext(name))
-                                            }}
-                                            className={lctext(name) === active ?
-                                                "flex items-center gap-3 rounded-lg bg-muted px-3 py-2 text-primary transition-all hover:text-primary" :
-                                                "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+                                            onClick={() => setActive(lctext(name))}
+                                            className={
+                                                lctext(name) === active
+                                                    ? "flex items-center gap-3 rounded-lg bg-muted px-3 py-2 text-primary transition-all hover:text-primary"
+                                                    : "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
                                             }
                                         >
                                             {icon}
                                             {name}
                                         </Link>
-                                    )
-                                } if (type === 'heading') {
+                                    );
+                                } else if (type === 'heading') {
                                     return (
                                         <div key={id} className="flex h-10 items-center border-b px-4 lg:h-[60px] lg:px-6">
                                             {name}
                                         </div>
-                                    )
+                                    );
                                 }
                             })}
                         </nav>
                     </div>
                 </div>
             </div>
-            <div className="flex flex-col">
-                <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
 
+            {/* Main Content */}
+            <div className="ml-[220px] lg:ml-[280px] flex flex-col w-full">
+                {/* Navbar */}
+                <header className={`
+                    flex h-14 items-center gap-4 border-b px-4 lg:h-[60px] lg:px-6 fixed top-0 left-[220px] lg:left-[280px] right-0 z-10 transition-colors duration-300
+                    ${isScrolled ? "bg-muted" : "bg-muted/40"}
+                    `}>
                     <div className="w-full flex-1">
                         <div className="w-2/3 mx-4 flex items-center space-x-1">
                             <DropdownMenu className="min-w-1/2">
@@ -279,7 +306,7 @@ const Layout = () => {
                                         <DropdownMenuRadioItem value="Ticket">Ticket</DropdownMenuRadioItem>
                                         <DropdownMenuRadioItem value="Customer">Customer</DropdownMenuRadioItem>
                                         <DropdownMenuRadioItem value="Company">Company</DropdownMenuRadioItem>
-                                        <DropdownMenuRadioItem value="Opportuninty">Opportunity</DropdownMenuRadioItem>
+                                        <DropdownMenuRadioItem value="Opportunity">Opportunity</DropdownMenuRadioItem>
                                         <DropdownMenuRadioItem value="Campaign">Campaign</DropdownMenuRadioItem>
                                     </DropdownMenuRadioGroup>
                                 </DropdownMenuContent>
@@ -294,13 +321,10 @@ const Layout = () => {
                                     <SearchIcon className="text-gray-500" />
                                 </div>
                             </div>
-
                         </div>
                     </div>
 
-                    <div className=''>
-                        Hello, {user.first_name}
-                    </div>
+                    <div>Hello, {user.first_name}</div>
 
                     <div className="flex-shrink-0">
                         <ModeToggle />
@@ -320,11 +344,13 @@ const Layout = () => {
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </header>
-                <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-                    <Outlet />
-                </main>
             </div>
-        </div >
+            {/* Main Scrollable Content */}
+            <main className="mt-[60px] ml-[220px] lg:ml-[280px] p-4 lg:p-6">
+                <Outlet />
+            </main>
+
+        </div>
     )
 }
 

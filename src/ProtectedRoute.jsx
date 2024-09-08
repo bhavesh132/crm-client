@@ -9,7 +9,6 @@ const ProtectedRoute = ({ element: Element, ...rest }) => {
         const token = localStorage.getItem('token')
         const resolved_token = JSON.parse(token)
         if (resolved_token === auth_token) {
-
             return true
         } else {
 

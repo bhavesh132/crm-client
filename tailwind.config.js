@@ -18,6 +18,8 @@ module.exports = {
     },
     extend: {
       colors: {
+        thumb: '#0c0404',
+        thumbHover: '#4b5563',
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -70,6 +72,8 @@ module.exports = {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "spin": "spin 1s linear infinite",
+        "spin-slow": "spin 2s linear infinite",
       },
     },
   },

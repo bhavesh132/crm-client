@@ -35,6 +35,7 @@ const Login = () => {
                         message: `Login Successful!`
                     })
                     navigate('/')
+                    window.location.reload(true);
                 } if (result.error) {
                     setAlert({
                         type: 'error',

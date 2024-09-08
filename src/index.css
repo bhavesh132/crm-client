@@ -4,6 +4,36 @@
 
 @layer base {
   @layer base {
+    ::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: theme('colors.muted.DEFAULT');
+      /* Use Tailwind's muted color */
+      border-radius: 8px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background-color: theme('colors.thumb');
+      /* Use Tailwind's thumb color */
+      border-radius: 10px;
+      border: 2px solid theme('colors.muted.DEFAULT');
+      /* Creates padding */
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background-color: theme('colors.thumbHover');
+      /* Use Tailwind's thumbHover color */
+    }
+
+    /* For Firefox */
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: theme('colors.thumb') theme('colors.muted.DEFAULT');
+    }
+
     :root {
       --background: 0 0% 100%;
       --foreground: 224 71.4% 4.1%;

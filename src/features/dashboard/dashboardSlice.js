@@ -22,10 +22,11 @@ export const getTotalData = createAsyncThunk(
 )
 
 const initialState = {
-    loading: false,
+    loading: true,
     data: null,
     totalData: null,
-    error: null
+    error: null,
+    isError: false
 }
 
 
@@ -46,6 +47,7 @@ export const dashboardSlice = createSlice({
             .addCase(getDashboardData.rejected, (state, action) => {
                 state.loading = false
                 state.error = action.payload
+                state.isError = true
             })
             .addCase(getTotalData.pending, (state) => {
                 state.loading = true
@@ -57,6 +59,7 @@ export const dashboardSlice = createSlice({
             .addCase(getTotalData.rejected, (state, action) => {
                 state.loading = false
                 state.error = action.payload
+                state.isError = true
             })
     }
 })

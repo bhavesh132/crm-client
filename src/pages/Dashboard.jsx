@@ -6,17 +6,21 @@ import DonutChart from "@/components/ui/DonutChart"
 import FeedItem from '../features/dashboard/FeedItem';
 import { useDispatch, useSelector } from 'react-redux';
 import { getDashboardData, getTotalData } from '../features/dashboard/dashboardSlice';
+import Loader from './generics/Loader';
+import ErrorPage from './generics/Error';
 
 const Dashboard = () => {
     const dispatch = useDispatch()
-    const { data, loading, error, totalData } = useSelector((state) => state.dashboard);
+    const { data, loading, isError, totalData } = useSelector((state) => state.dashboard);
     useEffect(() => {
         // Dispatch the action to load dashboard data when component mounts
         dispatch(getDashboardData());
         dispatch(getTotalData())
+
+
     }, [dispatch]);
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div>Error loading data: {error.message}</div>;
+    if (loading) return <Loader />;
+    if (isError) return <ErrorPage />;
     if (data && totalData) {
 
         const transformData = (data) => {
@@ -25,55 +29,65 @@ const Dashboard = () => {
                 value
             }));
         }
+
+        const getBykeyword = (obj, word) => {
+            const keyword = word
+            const matchingEntries = Object.entries(obj).filter(([key]) => key.includes(keyword));
+            return matchingEntries[0][1]
+        }
+
         const dashboardData = [
             {
+                key: 1,
                 title: 'Tasks',
                 icon: <FileBox className="text-blue-500 dark:text-blue-300" />,
                 data: transformData(data.tasks),
                 totalData: totalData.tasks,
-                footerText: `Sample Footer Text`,
-                footerText1: `Another Sample for Footer Text`,
+                footerText: `Your Tasks by Priority and Due Today`,
+                footerText1: '',
                 style: `bg-blue-100 dark:bg-blue-900`
             },
             {
+                key: 2,
                 title: 'Tickets',
                 icon: <Tag className="text-red-500 dark:text-red-300" />,
                 data: transformData(data.tickets),
                 totalData: totalData.tickets,
-                footerText: `Sample Footer Text`,
-                footerText1: `Another Sample for Footer Text`,
+                footerText: `Your Tickets by Priority and Due Today`,
+                footerText1: ``,
                 style: "bg-red-100 dark:bg-red-900"
             },
             {
+                key: 3,
                 title: 'Opportunities',
                 icon: <ShoppingCart className="text-yellow-500 dark:text-yellow-300" />,
                 data: transformData(data.opportunities),
                 totalData: totalData.opportunities,
-                footerText: `Sample Footer Text`,
-                footerText1: `Another Sample for Footer Text`,
+                footerText: `Your Opportunities by Probability and Status`,
+                footerText1: ``,
                 style: `bg-yellow-100 dark:bg-yellow-800`
             },
             {
+                key: 4,
                 title: 'Campaigns',
                 icon: <Calendar className="text-purple-500 dark:text-purple-300" />,
                 data: transformData(data.campaigns),
                 totalData: totalData.campaigns,
-                footerText: `Sample Footer Text`,
-                footerText1: `Another Sample for Footer Text`,
+                footerText: `Your Campaigns by Type`,
+                footerText1: ``,
                 style: `bg-purple-100 dark:bg-purple-900`
             }
         ]
-
         return (
             <>
                 <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     {/* Card 1: Tasks Due Today */}
 
-                    {dashboardData.map(({ title, icon, data, footerText, footerText1, style }) => {
+                    {dashboardData.map(({ key, title, icon, data, footerText, footerText1, style }) => {
                         return (
-                            <Card className={style}>
+                            <Card className={style} key={key}>
                                 <CardHeader>
-                                    <CardTitle className="flex items-center space-x-2 text-gray-800 dark:text-gray-200">
+                                    <CardTitle className="flex items-center space-x-2 pb-2 text-gray-800 dark:text-gray-200">
                                         {icon}
                                         <span>{title}</span>
                                     </CardTitle>

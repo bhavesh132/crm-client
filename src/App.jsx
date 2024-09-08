@@ -4,11 +4,11 @@ import Dashboard from './pages/Dashboard'
 import { ThemeProvider } from "@/components/themeProvider"
 import Login from './pages/Login'
 import ProtectedRoute from './ProtectedRoute'
+import ErrorPage from './pages/generics/Error'
+import Loader from './pages/generics/Loader'
+import Contact from './pages/Contact'
 
 function App() {
-  const isAuthenticated = () => {
-
-  }
 
   return (
     <>
@@ -19,7 +19,7 @@ function App() {
             <Route element={<ProtectedRoute element={Layout} />}>
               <Route path='/' element={<Navigate to="/dashboard" replace={true} />} />
               <Route path='dashboard' element={<ProtectedRoute element={Dashboard} />} />
-              <Route element="" />
+              <Route path='contact' element={<ProtectedRoute element={Contact} />} />
               <Route element="" />
             </Route>
           </Routes>
