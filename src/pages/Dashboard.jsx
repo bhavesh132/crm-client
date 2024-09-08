@@ -5,19 +5,18 @@ import ActivityFeed from '../features/dashboard/ActivityFeed';
 import DonutChart from "@/components/ui/DonutChart"
 import FeedItem from '../features/dashboard/FeedItem';
 import { useDispatch, useSelector } from 'react-redux';
-import { getDashboardData, getTotalData } from '../features/dashboard/dashboardSlice';
+import { getDashboardData, getRecentActivity, getTotalData } from '../features/dashboard/dashboardSlice';
 import Loader from './generics/Loader';
 import ErrorPage from './generics/Error';
 
 const Dashboard = () => {
     const dispatch = useDispatch()
-    const { data, loading, isError, totalData } = useSelector((state) => state.dashboard);
+    const { data, loading, isError, totalData, recentActivity } = useSelector((state) => state.dashboard);
     useEffect(() => {
         // Dispatch the action to load dashboard data when component mounts
         dispatch(getDashboardData());
-        dispatch(getTotalData())
-
-
+        dispatch(getTotalData());
+        dispatch(getRecentActivity())
     }, [dispatch]);
     if (loading) return <Loader />;
     if (isError) return <ErrorPage />;
@@ -28,12 +27,6 @@ const Dashboard = () => {
                 name: key,
                 value
             }));
-        }
-
-        const getBykeyword = (obj, word) => {
-            const keyword = word
-            const matchingEntries = Object.entries(obj).filter(([key]) => key.includes(keyword));
-            return matchingEntries[0][1]
         }
 
         const dashboardData = [
@@ -123,7 +116,7 @@ const Dashboard = () => {
                         </div>
                     </div >
                     <div className="w-1/4 min-h-80">
-                        <ActivityFeed />
+                        {recentActivity ? <ActivityFeed data={recentActivity} /> : <Loader />}
                     </div>
                 </div>
             </>

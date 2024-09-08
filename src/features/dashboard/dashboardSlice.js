@@ -1,7 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
 import { axiosInstance } from "../../lib/utils";
-import Cookies from "js-cookie";
 
 
 export const getDashboardData = createAsyncThunk(
@@ -12,19 +10,34 @@ export const getDashboardData = createAsyncThunk(
         return response
     }
 )
+
+export const getRecentActivity = createAsyncThunk(
+    'dashboard/recents',
+    async () => {
+
+        const request = await axiosInstance.get(`auth/get_logs/`)
+        const response = await request.data
+        console.log(response)
+        return response
+    }
+)
 export const getTotalData = createAsyncThunk(
     'dashboard/total_data',
     async () => {
+
         const request = await axiosInstance.get(`features/total_data`)
         const response = await request.data
         return response
     }
 )
 
+
+
 const initialState = {
     loading: true,
     data: null,
     totalData: null,
+    recentActivity: null,
     error: null,
     isError: false
 }
@@ -57,6 +70,18 @@ export const dashboardSlice = createSlice({
                 state.totalData = action.payload
             })
             .addCase(getTotalData.rejected, (state, action) => {
+                state.loading = false
+                state.error = action.payload
+                state.isError = true
+            })
+            .addCase(getRecentActivity.pending, (state) => {
+                state.loading = true
+            })
+            .addCase(getRecentActivity.fulfilled, (state, action) => {
+                state.loading = false
+                state.recentActivity = action.payload
+            })
+            .addCase(getRecentActivity.rejected, (state, action) => {
                 state.loading = false
                 state.error = action.payload
                 state.isError = true
