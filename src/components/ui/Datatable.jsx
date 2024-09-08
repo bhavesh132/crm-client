@@ -18,7 +18,7 @@ const DataTable = ({ data, columns, onRowClick, onFilterChange, onSort }) => {
                         {columns.map((col) => (
                             <th
                                 key={col.key}
-                                className="min-w-80 px-4 py-2 text-left text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-900 border-b border-gray-300 dark:border-gray-700"
+                                className={`${col.label === "ID" ? 'min-w-20' : 'min-w-80'} px-4 py-2 text-left text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-900 border-b border-gray-300 dark:border-gray-700`}
                             >
                                 <div className="flex items-center space-x-2">
                                     <span>{col.label}</span>
@@ -40,7 +40,7 @@ const DataTable = ({ data, columns, onRowClick, onFilterChange, onSort }) => {
                                 <input
                                     type="text"
                                     className="mt-1 border border-gray-300 dark:border-gray-700 p-2 rounded-lg w-full text-sm dark:bg-gray-900 dark:text-gray-300"
-                                    placeholder={`Filter ${col.label}`}
+                                    placeholder={`${col.label}`}
                                     onChange={(e) => onFilterChange(col.key, e.target.value)}
                                 />
                             </th>

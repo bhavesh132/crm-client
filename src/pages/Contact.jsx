@@ -1,24 +1,34 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import DataTable from '../components/ui/Datatable';
-import { ButtonIcon } from '@radix-ui/react-icons';
 import { Button } from '@/components/ui/button'
 import { PlusIcon } from 'lucide-react';
+import { useSelector, useDispatch } from 'react-redux';
 
-const ContactData = [
-    { id: 1, name: "John Doe", email: "john@example.com", phone: "+1 234 567 890", company: "TruAdvantage", title: "VP-Strategy" },
-    { id: 2, name: "Jane Smith", email: "jane@example.com", phone: "+1 987 654 321" },
-];
+import { getAllContacts } from '../features/contacts/contactSlice';
+
 
 const columns = [
-    { key: "name", label: "Name" },
+    { key: "num_id", label: "ID" },
+    { key: "full_name", label: "Name" },
+    { key: "company_name", label: "Company Name" },
     { key: "email", label: "Email" },
-    { key: "phone", label: "Phone" },
-    { key: "company", label: "Company" },
+    { key: "contact_number", label: "Contact" },
+    { key: "contact_type", label: "Type" },
     { key: "title", label: "Position" },
-    { key: "type", label: "Type" },
 ];
 
 const Contact = () => {
+    const dispatch = useDispatch();
+    const { data, loading, isError } = useSelector((state) => state.contact);
+    useEffect(() => {
+        dispatch(getAllContacts())
+    }, [dispatch])
+
+    console.log(data)
+    const ContactData = data
+
+
+
     const [selectedTab, setSelectedTab] = useState("list"); // Tracks current tab
     const [selectedRecord, setSelectedRecord] = useState(null);
 

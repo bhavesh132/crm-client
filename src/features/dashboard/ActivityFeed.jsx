@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import {
-    Tag,
     ShoppingCart,
     LayoutList,
     Building2,
@@ -30,8 +29,6 @@ const ActivityFeed = ({ data }) => {
                 return <div className="h-8 w-8 rounded-full bg-teal-600 flex items-center justify-center"><FileBox className="text-gray-50 h-4 w-4" /></div>;
         }
     }
-
-    const modelField = {}
 
     const getlogData = (app_label, model_name, object_id) => {
         const [instanceDetails, setInstanceDetails] = useState(null);
