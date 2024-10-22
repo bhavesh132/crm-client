@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router';
 
-const DataTable = ({ data, columns, onRowClick, onFilterChange, onSort }) => {
-    const navigate = useNavigate();
+
+const DataTable = ({ data, columns, onRowClick, onFilterChange, onSort, filters }) => {
+    const navigate = useNavigate()
     const [selectedRow, setSelectedRow] = useState(null);
 
     const handleRowClick = (item) => {
@@ -41,6 +42,7 @@ const DataTable = ({ data, columns, onRowClick, onFilterChange, onSort }) => {
                                     type="text"
                                     className="mt-1 border border-gray-300 dark:border-gray-700 p-2 rounded-lg w-full text-sm dark:bg-gray-900 dark:text-gray-300"
                                     placeholder={`${col.label}`}
+                                    value={filters.hasOwnProperty(col.key) ? filters[col.key] : ""}
                                     onChange={(e) => onFilterChange(col.key, e.target.value)}
                                 />
                             </th>

@@ -2,22 +2,8 @@ import { Button } from '@/components/ui/button';
 import { CardDescription, CardTitle, Card } from '../../components/ui/card';
 
 import { XCircle } from 'lucide-react';
-function ErrorPage() {
+function ErrorPage({ message }) {
     return (
-        // <div className="flex flex-col items-center justify-center h-screen">
-        //     <Card className="w-full p-6 items-center justify-center flex flex-col border-collapse border-none outline-none shadow-none">
-        //         <CardTitle className="text-center text-5xl px-6 py-6 font-bold text-red-500">
-        //             Something Went Wrong
-        //         </CardTitle>
-        //         <CardDescription className="text-center text-gray-500">
-        //             We apologize for the inconvenience. Please try again later or contact our support team.
-        //         </CardDescription>
-        //         <Button className="mx-4 my-12">
-        //             Take me home
-        //         </Button>
-        //     </Card>
-        // </div>
-
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900">
             {/* Error Icon */}
             <XCircle className="h-20 w-20 text-red-500 mb-4" />
@@ -41,8 +27,9 @@ function ErrorPage() {
             </button>
 
             {/* Fun Footer Message */}
+
             <p className="mt-4 text-sm text-gray-500 dark:text-gray-400 italic">
-                It’s not you, it’s us. We’ll get this fixed soon.
+                {message ? message : "It’s not you, it’s us. We’ll get this fixed soon."}
             </p>
         </div>
     );
