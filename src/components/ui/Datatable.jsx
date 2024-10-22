@@ -12,9 +12,9 @@ const DataTable = ({ data, columns, onRowClick, onFilterChange, onSort, filters 
     };
 
     return (
-        <div className="overflow-x-auto w-full">
+        <div>
             <table className="min-w-full border-collapse bg-white dark:bg-gray-800 shadow-lg rounded-lg">
-                <thead>
+                <thead className='sticky top-0 z-10'>
                     <tr>
                         {columns.map((col) => (
                             <th
@@ -49,7 +49,7 @@ const DataTable = ({ data, columns, onRowClick, onFilterChange, onSort, filters 
                         ))}
                     </tr>
                 </thead>
-                <tbody>
+                <tbody className="overflow-x-auto w-full">
                     {data.map((row, idx) => (
                         <tr
                             key={idx}

@@ -1,7 +1,7 @@
 import React from 'react'
-import { Button } from "@/components/ui/button"
 
-const ContactDetail = ({ selectedRecord, setSelectedTab, setSelectedRecord }) => {
+
+const ContactDetail = ({ selectedRecord }) => {
     return (
         <div>
             <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg space-y-4">
@@ -12,23 +12,8 @@ const ContactDetail = ({ selectedRecord, setSelectedTab, setSelectedRecord }) =>
                     <p><strong>Email:</strong> {selectedRecord.email}</p>
                     <p><strong>Phone:</strong> {selectedRecord.contact_number}</p>
                 </div>
-                {/* Edit Button */}
-                <Button
-                    className="mt-4 px-4 py-2 hover:bg-violet-900"
-                    onClick={() => handleEdit(selectedRecord)}
-                >
-                    Edit Contact
-                </Button>
-                <Button variant='destructive'
-                    className="mt-4 ml-8 px-4 min-w-24 bg-violet-50 hover:bg-gray-700 text-gray-900 hover:text-green-50 mr-4 p-4 border-l-violet-600"
-                    onClick={() => {
-                        setSelectedTab("list")
-                        setSelectedRecord(null)
-                    }}
-                >
-                    Back
-                </Button>
-            </div></div>
+            </div>
+        </div>
     )
 }
 
