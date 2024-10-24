@@ -2,14 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router';
 
 
-const DataTable = ({ data, columns, onRowClick, onFilterChange, onSort, filters }) => {
-    const navigate = useNavigate()
-    const [selectedRow, setSelectedRow] = useState(null);
-
-    const handleRowClick = (item) => {
-        setSelectedRow(item);
-        navigate(`/detail/${item.id}`);  // Navigate to detail page of the selected item
-    };
+const DataTable = ({ data, columns, onRowClick, onFilterChange, onSort, filters, orderBy }) => {
 
     return (
         <div>
@@ -25,20 +18,26 @@ const DataTable = ({ data, columns, onRowClick, onFilterChange, onSort, filters 
                                     <span>{col.label}</span>
                                     {/* Sort buttons */}
                                     <button
-                                        className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                                        className={`${orderBy === col.key
+                                            ? "text-black" // Active state for ascending
+                                            : "text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" // Default state
+                                            }`}
                                         onClick={() => onSort(col.key, 'asc')}
                                     >
                                         ▲
                                     </button>
                                     <button
-                                        className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                                        className={`${orderBy === `-${col.key}`
+                                            ? "text-black" // Active state for ascending
+                                            : "text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" // Default state
+                                            }`}
                                         onClick={() => onSort(col.key, 'desc')}
                                     >
                                         ▼
                                     </button>
                                 </div>
                                 {/* Filter input */}
-                                <input
+                                < input
                                     type="text"
                                     className="mt-1 border border-gray-300 dark:border-gray-700 p-2 rounded-lg w-full text-sm dark:bg-gray-900 dark:text-gray-300"
                                     placeholder={`${col.label}`}
@@ -49,7 +48,7 @@ const DataTable = ({ data, columns, onRowClick, onFilterChange, onSort, filters 
                         ))}
                     </tr>
                 </thead>
-                <tbody className="overflow-x-auto w-full">
+                <tbody className="overflow-x-auto w-full"   >
                     {data.map((row, idx) => (
                         <tr
                             key={idx}
@@ -61,14 +60,14 @@ const DataTable = ({ data, columns, onRowClick, onFilterChange, onSort, filters 
                                     key={col.key}
                                     className="px-4 py-2 border-b border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-400"
                                 >
-                                    {row[col.key]}
+                                    {typeof (row[col.key]) === 'string' ? row[col.key] : row[col.key]}
                                 </td>
                             ))}
                         </tr>
                     ))}
                 </tbody>
             </table>
-        </div>
+        </div >
     );
 };
 

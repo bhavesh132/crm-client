@@ -7,30 +7,36 @@ const initialState = {
     error: null,
     isError: false,
     totalCount: 0,
-    page: 1,
-    pageSize: 50,
     orderBy: "num_id",
-    filters: {}
+    filters: {},
 }
 
 export const getAllContacts = createAsyncThunk(
     'customer/all_contacts',
     async (_, { getState }) => {
         const { contact, pagination } = getState(); // Access the 'contact' state directly
-        console.log(contact, pagination); // Log the entire contact state to verify
         const { pageSize, currentPage } = pagination
         const { orderBy, filters } = contact;
 
         const request = await axiosInstance.get(`customer/contact/`, {
             params: {
-                page: currentPage,
                 page_size: pageSize,
+                page: currentPage,
                 order_by: orderBy,
                 ...filters
             }
         })
         const response = await request.data
 
+        return response
+    }
+)
+
+export const getContactDetails = createAsyncThunk(
+    'customer/getContactDetail',
+    async (id) => {
+        const request = await axiosInstance.get(`customer/contact/${id}/`)
+        const response = await request.data
         return response
     }
 )
@@ -66,6 +72,18 @@ export const contactSlice = createSlice({
                 state.loading = false
             })
             .addCase(getAllContacts.rejected, (state, action) => {
+                state.loading = false
+                state.error = action.error
+                state.isError = true
+            })
+            .addCase(getContactDetails.pending, (state) => {
+                state.loading = true
+            })
+            .addCase(getContactDetails.fulfilled, (state, action) => {
+                state.data = action.payload
+                state.loading = false
+            })
+            .addCase(getContactDetails.rejected, (state, action) => {
                 state.loading = false
                 state.error = action.error
                 state.isError = true

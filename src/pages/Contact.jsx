@@ -1,20 +1,27 @@
 import React, { useState, useEffect } from 'react'
 import DataTable from '../components/ui/Datatable';
 import { Button } from '@/components/ui/button'
-import { PlusIcon } from 'lucide-react';
+import { PlusIcon, ArrowRight } from 'lucide-react';
 import { useSelector, useDispatch } from 'react-redux';
 import Loader from './generics/Loader';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
+
 import ErrorPage from './generics/Error';
 import { setSortingParams, setFilterParams } from '../features/contacts/contactSlice'
 import Actions from '../components/Actions';
-import { getAllContacts } from '../features/contacts/contactSlice';
+import { getAllContacts, getContactDetails } from '../features/contacts/contactSlice';
 import ContactDetail from '../features/contacts/ContactDetail';
+import { setCurrentPage, setPageSize, setTotalCount } from '../features/generics/paginationSlice';
 import {
     Pagination,
     PaginationContent,
-    PaginationEllipsis,
     PaginationItem,
-    PaginationLink,
     PaginationNext,
     PaginationPrevious,
 } from "@/components/ui/pagination"
@@ -38,11 +45,26 @@ const Contact = () => {
     const { data, loading, isError, error, filters, orderBy, totalCount } = useSelector((state) => state.contact);
     const { pageSize, currentPage } = useSelector((state) => state.pagination);
     const [filterQuery, setFilterQuery] = useState({})
+    const totalPages = Math.ceil(totalCount / pageSize);
+
+
+    const contactActions = [
+        { label: "View", action: () => viewDetails(selectedRecord) },
+        { label: "Edit", action: () => editContact(selectedRecord) },
+        { label: "Delete", action: () => deleteContact(selectedRecord) },
+        { label: "Back", action: () => setSelectedRecord(null) }
+    ];
+
     const ContactData = data
+    console.log(ContactData)
     useEffect(() => {
         dispatch(getAllContacts())
-    }, [dispatch, orderBy, filters])
+        dispatch(setTotalCount(totalCount))
+    }, [dispatch, orderBy, pageSize, filters, currentPage, selectedRecord])
 
+    useEffect(() => {
+        console.log("PageSize updated: ", pageSize);
+    }, [pageSize]);
 
     if (loading) return <Loader />;
     if (isError) return <ErrorPage message={error.message} />;
@@ -57,6 +79,10 @@ const Contact = () => {
             }
             console.log(`Sorting by ${key} in ${order} order`);
         };
+
+        const handlePageChange = (page) => {
+            dispatch(setCurrentPage(page));
+        }
 
         const handleFilterChange = (key, value) => {
             // Backend handles filtering;
@@ -81,6 +107,8 @@ const Contact = () => {
         const handleRowClick = (record) => {
             setSelectedRecord(record);
             setSelectedTab("detail");
+            console.log(record)
+            dispatch(getContactDetails(record.id))
         };
         return (
             <div className="flex h-full">
@@ -96,7 +124,6 @@ const Contact = () => {
                     {!selectedRecord ? (
                         <div className='flex flex-col justify-end'>
                             <div className='flex flex-row justify-end'>
-
                                 <Button onClick={handleClear} className='bg-violet-50 min-w-24 hover:bg-gray-700 text-gray-900 hover:text-green-50 mr-4 p-4 border-l-violet-600'>
                                     Clear
                                 </Button>
@@ -109,25 +136,39 @@ const Contact = () => {
                                 </Button>
                             </div>
                             <div className='flex mt-6 flex-row justify-end items-center w-full'>
+                                <div className="flex items-center ml-0 mr-auto mb-2">
+                                    <Select onValueChange={(value) => { dispatch(setPageSize(value)) }}>
+                                        <SelectTrigger className="w-fit">
+                                            <SelectValue placeholder={pageSize} />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="10">10</SelectItem>
+                                            <SelectItem value="50">50</SelectItem>
+                                            <SelectItem value="100">100</SelectItem>
+                                            <SelectItem value="150">150</SelectItem>
+                                            <SelectItem value="200">200</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+
                                 <div className='w-fit mr-6'>
                                     <Pagination>
                                         <PaginationContent>
-                                            <PaginationItem>
-                                                <PaginationPrevious onClick />
+                                            <PaginationItem className='cursor-pointer'>
+                                                <PaginationPrevious onClick={() => handlePageChange(Math.max(currentPage - 1, 1))} />
                                             </PaginationItem>
-                                            <PaginationItem>
-                                                <PaginationLink onClick>1</PaginationLink>
-                                            </PaginationItem>
-                                            <PaginationItem>
-                                                <PaginationEllipsis />
-                                            </PaginationItem>
-                                            <PaginationItem>
-                                                <PaginationNext onClick />
+                                            {/* Render pagination links */}
+
+                                            <p className='text-sm italic px-4'>Page {currentPage} of {totalPages}</p>
+
+
+                                            <PaginationItem className='cursor-pointer'>
+                                                <PaginationNext onClick={() => handlePageChange(Math.min(currentPage + 1, totalPages))} />
                                             </PaginationItem>
                                         </PaginationContent>
                                     </Pagination>
                                 </div>
-                                <div className='align-middle text-sm text-gray-700 w-[150px] h-full justify-end'>
+                                <div className='align-middle text-sm text-gray-700 w-[150px] h-full justify-end dark:text-gray-400'>
                                     Displaying {totalCount} Records
                                 </div>
                             </div>
@@ -135,38 +176,13 @@ const Contact = () => {
                     ) :
                         <Actions
                             entityType="contact"
-                            actions={['edit', 'delete', 'view details']}
+                            actions={contactActions}
                             selectedRecord={selectedRecord}
                             setSelectedRecord={setSelectedRecord}
                             selectedTab={selectedTab}
                             setSelectedTab={setSelectedTab}
                         />
                     }
-
-
-
-
-                    {/* Tabs for List and Details */}
-                    {/* <div className="flex space-x-4 border-b border-gray-300 dark:border-gray-700 mb-4">
-                        <button
-                            className={`py - 2 px - 4 ${!selectedRecord
-                                ? "border-b-2 border-violet-500 text-violet-500"
-                                : "text-gray-600 dark:text-gray-400"
-                                } `}
-                            onClick={() => setSelectedRecord(null)}
-                        >
-                            Contact List
-                        </button>
-                        <button
-                            className={`py - 2 px - 4 ${selectedRecord
-                                ? "border-b-2 border-violet-500 text-violet-500"
-                                : "text-gray-600 dark:text-gray-400"
-                                } `}
-                            disabled={!selectedRecord}
-                        >
-                            Contact Details
-                        </button>
-                    </div> */}
 
                     {/* Table or Details */}
                     {!selectedRecord ? (
@@ -178,6 +194,7 @@ const Contact = () => {
                                 onFilterChange={handleFilterChange}
                                 onSort={handleSort}
                                 filters={filterQuery}
+                                orderBy={orderBy}
                             />
                         </div>
                     ) : (

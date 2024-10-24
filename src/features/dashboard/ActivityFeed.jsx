@@ -53,7 +53,6 @@ const ActivityFeed = ({ data }) => {
             <h2 className="text-lg font-semibold mb-4">Recent Activity</h2>
             <ul className="space-y-4">
                 {data.slice(0, 6).map((logValue) => {
-                    const changes = JSON.parse(logValue.changes)
                     const user = getlogData('authentication', 'User', logValue.user)
                     const get_name = () => {
                         try {
