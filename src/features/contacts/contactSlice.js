@@ -4,19 +4,18 @@ import { axiosInstance } from "../../lib/utils";
 const initialState = {
     loading: true,
     data: null,
+    contactDetail: null,
     error: null,
     isError: false,
     totalCount: 0,
-    orderBy: "num_id",
-    filters: {},
 }
 
 export const getAllContacts = createAsyncThunk(
     'customer/all_contacts',
     async (_, { getState }) => {
-        const { contact, pagination } = getState(); // Access the 'contact' state directly
+        const { filter, pagination } = getState(); // Access the 'contact' state directly
         const { pageSize, currentPage } = pagination
-        const { orderBy, filters } = contact;
+        const { orderBy, filters } = filter;
 
         const request = await axiosInstance.get(`customer/contact/`, {
             params: {
@@ -45,22 +44,7 @@ export const getContactDetails = createAsyncThunk(
 export const contactSlice = createSlice({
     name: 'contact',
     initialState,
-    reducers: {
-        setSortingParams: (state, action) => {
-            state.orderBy = action.payload
-        },
-        setFilterParams: (state, action) => {
-            const filterParams = { ...action.payload }
-            if (Object.keys(action.payload).length === 0) {
-                state.filters = {};  // Reset the filters
-            } else {
-                // Otherwise, merge the new filters with the current filters
-                state.filters = { ...state.filters, ...filterParams }
-            }
-
-        }
-
-    },
+    reducers: {},
     extraReducers: (builder) => {
         builder
             .addCase(getAllContacts.pending, (state) => {
@@ -80,7 +64,7 @@ export const contactSlice = createSlice({
                 state.loading = true
             })
             .addCase(getContactDetails.fulfilled, (state, action) => {
-                state.data = action.payload
+                state.contactDetail = action.payload
                 state.loading = false
             })
             .addCase(getContactDetails.rejected, (state, action) => {
@@ -91,6 +75,5 @@ export const contactSlice = createSlice({
     }
 })
 
-export const { setSortingParams, setFilterParams } = contactSlice.actions
 
 export default contactSlice.reducer

@@ -2,7 +2,7 @@ import React from "react";
 
 const Loader = () => {
     return (
-        <div className="flex flex-col justify-center items-center min-h-screen">
+        <div className="flex flex-col justify-center items-center">
             <div className="relative w-16 h-16">
                 <div className="absolute inset-0 border-4 border-t-transparent border-blue-500 rounded-full animate-spin"></div>
                 <div className="absolute inset-1 border-4 border-t-transparent border-blue-300 rounded-full animate-spin-slow"></div>

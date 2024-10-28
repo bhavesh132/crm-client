@@ -4,9 +4,8 @@ import Dashboard from './pages/Dashboard'
 import { ThemeProvider } from "@/components/themeProvider"
 import Login from './pages/Login'
 import ProtectedRoute from './ProtectedRoute'
-import ErrorPage from './pages/generics/Error'
-import Loader from './pages/generics/Loader'
 import Contact from './pages/Contact'
+import Tickets from './pages/Tickets'
 
 function App() {
 
@@ -20,6 +19,7 @@ function App() {
               <Route path='/' element={<Navigate to="/dashboard" replace={true} />} />
               <Route path='dashboard' element={<ProtectedRoute element={Dashboard} />} />
               <Route path='contact' element={<ProtectedRoute element={Contact} />} />
+              <Route path='tickets' element={<ProtectedRoute element={Tickets} />} />
               <Route element="" />
             </Route>
           </Routes>

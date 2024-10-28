@@ -11,9 +11,9 @@ export const getRecentActivity = createAsyncThunk(
     }
 )
 
-export const getInstaceDetail = createAsyncThunk(
+export const getInstanceDetail = createAsyncThunk(
     'auditLogs/instanceDetails',
-    async (app_label, model_name, object_id) => {
+    async ({ app_label, model_name, object_id }) => {
         const request = await axiosInstance.get(`auth/instance-detail/${app_label}/${model_name}/${object_id}/`)
         const response = await request.data
         return response
@@ -24,14 +24,14 @@ export const getInstaceDetail = createAsyncThunk(
 const initialState = {
     loading: true,
     recentActivity: null,
-    instance: null,
+    instance: {},
     error: null,
     isError: false
 }
 
 
-export const dashboardSlice = createSlice({
-    name: 'dashboard',
+export const auditSlice = createSlice({
+    name: 'audit',
     initialState,
     reducers: {
     },
@@ -49,17 +49,19 @@ export const dashboardSlice = createSlice({
                 state.error = action.payload
                 state.isError = true
             })
-            .addCase(getInstaceDetail.pending, (state) => {
+            .addCase(getInstanceDetail.pending, (state) => {
                 state.loading = true
             })
-            .addCase(getInstaceDetail.fulfilled, (state, action) => {
+            .addCase(getInstanceDetail.fulfilled, (state, action) => {
                 state.loading = false
-                state.instance = action.payload
+                state.instance = { ...state.instance, ...action.payload }
             })
-            .addCase(getInstaceDetail.rejected, (state, action) => {
+            .addCase(getInstanceDetail.rejected, (state, action) => {
                 state.loading = false
                 state.error = action.payload
                 state.isError = true
             })
     }
 })
+
+export default auditSlice.reducer

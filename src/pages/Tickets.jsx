@@ -37,7 +37,7 @@ const columns = [
     { key: "title", label: "Position" },
 ];
 
-const Contact = () => {
+const Ticket = () => {
     const [selectedTab, setSelectedTab] = useState("list"); // Tracks current tab
     const { user } = useSelector((state) => state.global);
     const { pageSize, currentPage } = useSelector((state) => state.pagination);
@@ -226,4 +226,4 @@ const Contact = () => {
     }
 }
 
-export default Contact
+export default Ticket

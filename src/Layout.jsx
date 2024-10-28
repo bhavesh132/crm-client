@@ -108,7 +108,7 @@ const sidebarItems = [
     {
         id: 6,
         name: 'Tickets',
-        link: '/dashboard',
+        link: '/tickets',
         icon: <Ticket className="h-4 w-4" />,
         type: 'link'
     },
