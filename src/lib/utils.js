@@ -2,13 +2,16 @@ import { clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 import axios from "axios"
 
+const baseURL = import.meta.env.VITE_API_BASE_URL;
+
 export function cn(...inputs) {
   return twMerge(clsx(inputs))
 }
 
 const token = JSON.parse(localStorage.getItem('token'))
+
 export const axiosInstance = axios.create({
-  baseURL: 'http://127.0.0.1:8000/api/', // Replace with your API base URL
+  baseURL: baseURL,
   headers: {
     'Content-Type': 'application/json',
     'Authorization': token ? `Token ${token}` : '',

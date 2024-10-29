@@ -40,7 +40,7 @@ const Login = () => {
                 } if (result.error) {
                     setAlert({
                         type: 'error',
-                        message: `Login failed! Please check your Credentials and try again`
+                        message: `Login failed! ${result.error}`
                     })
                 }
             })
