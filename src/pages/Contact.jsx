@@ -37,11 +37,13 @@ const columns = [
     { key: "title", label: "Position" },
 ];
 
+const dataMapping = {}
+
 const Contact = () => {
     const [selectedTab, setSelectedTab] = useState("list"); // Tracks current tab
     const { user } = useSelector((state) => state.global);
     const { pageSize, currentPage } = useSelector((state) => state.pagination);
-
+    const [inputValues, setInputValues] = useState({});
     const [selectedRecord, setSelectedRecord] = useState(null);
     const dispatch = useDispatch();
     const { data, loading, isError, error, totalCount } = useSelector((state) => state.contact);
@@ -79,12 +81,31 @@ const Contact = () => {
         };
 
         const handleFilterChange = (key, value) => {
-            // Backend handles filtering;
-            const filterParams = { [key]: value };
-            setFilterQuery(prev => ({
-                ...prev,
-                ...filterParams
-            }));
+            setInputValues(prev => ({ ...prev, [key]: value }));
+
+            if (dataMapping[key]) {
+                const propertyName = dataMapping[key].name;
+                let filterParams;
+
+                // Check if the propertyName corresponds to a related field where you want to use icontains
+                if (propertyName === 'username' || propertyName === 'name') {
+                    filterParams = { [`${key}__${propertyName}__icontains`]: value }; // Using icontains
+                } else {
+                    filterParams = { [`${key}__${propertyName}`]: value }; // Default exact match
+                }
+
+                setFilterQuery(prev => ({
+                    ...prev,
+                    ...filterParams
+                }));
+            } else {
+                const filterParams = { [key]: value };
+
+                setFilterQuery(prev => ({
+                    ...prev,
+                    ...filterParams
+                }));
+            }
         };
 
         const handleViewValue = async (value) => {
@@ -182,7 +203,7 @@ const Contact = () => {
 
 
                                             <PaginationItem className='cursor-pointer'>
-                                                <PaginationNext onClick={() => handlePageChange(Math.min(currentPage + 1, totalPages))} />
+                                                <PaginationNext onClick={() => handlePageChange(Math.min(currentPage + 1, totalPages))} disabled={totalPages <= currentPage ? true : false} />
                                             </PaginationItem>
                                         </PaginationContent>
                                     </Pagination>
@@ -206,15 +227,16 @@ const Contact = () => {
 
                     {/* Table or Details */}
                     {!selectedRecord ? (
-                        <div style={{ width: '100%', height: '68.5vh' }} className='overflow-y-scroll'>
+                        <div style={{ width: '100%', height: '75vh' }} className='overflow-y-scroll'>
                             <DataTable
                                 data={ContactData}
                                 columns={columns}
                                 onRowClick={handleRowClick}
                                 onFilterChange={handleFilterChange}
                                 onSort={handleSort}
-                                filters={filterQuery}
+                                inputValues={inputValues}
                                 orderBy={orderBy}
+                                dataMapping={dataMapping}
                             />
                         </div>
                     ) : (

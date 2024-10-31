@@ -6,6 +6,7 @@ import Login from './pages/Login'
 import ProtectedRoute from './ProtectedRoute'
 import Contact from './pages/Contact'
 import Tickets from './pages/Tickets'
+import NotFound from './pages/generics/NotFound'
 
 function App() {
 
@@ -20,8 +21,8 @@ function App() {
               <Route path='dashboard' element={<ProtectedRoute element={Dashboard} />} />
               <Route path='contact' element={<ProtectedRoute element={Contact} />} />
               <Route path='tickets' element={<ProtectedRoute element={Tickets} />} />
-              <Route element="" />
             </Route>
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </ThemeProvider>
       </BrowserRouter>

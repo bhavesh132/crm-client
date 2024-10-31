@@ -1,6 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Arya:wght@400;700&family=Mukta:wght@200;300;400;500;600;700;800&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Yatra+One&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 
 @layer base {
   @layer base {
@@ -90,6 +92,7 @@
     }
 
   }
+
   :root {
     --background: 0 0% 100%;
     --foreground: 224 71.4% 4.1%;
@@ -117,6 +120,7 @@
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
   }
+
   .dark {
     --background: 224 71.4% 4.1%;
     --foreground: 210 20% 98%;
@@ -152,5 +156,6 @@
 
   body {
     @apply bg-background text-foreground;
+    font-family: 'nunito';
   }
 }

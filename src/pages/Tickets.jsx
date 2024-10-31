@@ -4,8 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import Loader from './generics/Loader';
 import ErrorPage from './generics/Error';
 import Actions from '../components/Actions';
-import { getAllContacts } from '../features/contacts/contactSlice';
-import ContactDetail from '../features/contacts/ContactDetail';
+
 import {
     Pagination,
     PaginationContent,
@@ -26,38 +25,67 @@ import { setFilterParams } from '../features/generics/filterSlice'
 import { setSortingParams } from '../features/generics/filterSlice'
 import { Button } from '@/components/ui/button'
 import { PlusIcon } from 'lucide-react';
+import { getAllTickets } from '../features/tickets/ticketSlice';
+import TicketDetail from '../features/tickets/TicketDetail';
 
 const columns = [
     { key: "num_id", label: "ID" },
-    { key: "full_name", label: "Name" },
-    { key: "company_name", label: "Company Name" },
-    { key: "email", label: "Email" },
-    { key: "contact_number", label: "Contact" },
-    { key: "contact_type", label: "Type" },
-    { key: "title", label: "Position" },
+    { key: "title", label: "Title" },
+    { key: "status", label: "Status" },
+    { key: "owner", label: "Ticket Owner" },
+    { key: "priority", label: "Priority" },
+    { key: "due_date", label: "Due Date" },
+    { key: "created_by", label: "Created By" },
+    { key: "customer_id", label: "Customer" },
+
 ];
+
+const dataMapping = {
+    created_by: {
+        extractor: (row) => row.created_by?.username || '',
+        name: 'username'
+    },
+    ticket_type: {
+        extractor: (row) => row.ticket_type?.name || '',
+        name: 'name'
+    },
+    ticket_subtype: {
+        extractor: (row) => row.ticket_subtype?.name || '',
+        name: 'name'
+    },
+    customer_id: {
+        extractor: (row) => row.customer_id?.full_name || '',
+        name: 'full_name'
+    },
+    owner: {
+        extractor: (row) => row.owner?.username || '',
+        name: 'username'
+    },
+
+};
 
 const Ticket = () => {
     const [selectedTab, setSelectedTab] = useState("list"); // Tracks current tab
     const { user } = useSelector((state) => state.global);
     const { pageSize, currentPage } = useSelector((state) => state.pagination);
-
+    const [inputValues, setInputValues] = useState({});
     const [selectedRecord, setSelectedRecord] = useState(null);
     const dispatch = useDispatch();
-    const { data, loading, isError, error, totalCount } = useSelector((state) => state.contact);
+    const { data, loading, isError, error, totalCount } = useSelector((state) => state.ticket);
     const [filterQuery, setFilterQuery] = useState({})
     const { orderBy, filters } = useSelector((state) => state.filter)
 
-    const contactActions = [
+    const ticketActions = [
         { label: "Edit", action: () => editContact(selectedRecord) },
         { label: "Delete", action: () => deleteContact(selectedRecord) },
         { label: "Send Email", action: () => setSelectedRecord(null) },
         { label: "Back", action: () => setSelectedRecord(null) },
     ];
     const totalPages = Math.ceil(totalCount / pageSize);
-    const ContactData = data
+    const ticketData = data
+
     useEffect(() => {
-        dispatch(getAllContacts())
+        dispatch(getAllTickets())
         dispatch(setTotalCount(totalCount))
     }, [dispatch, orderBy, pageSize, filters, currentPage, selectedRecord])
 
@@ -79,21 +107,40 @@ const Ticket = () => {
         };
 
         const handleFilterChange = (key, value) => {
-            // Backend handles filtering;
-            const filterParams = { [key]: value };
-            setFilterQuery(prev => ({
-                ...prev,
-                ...filterParams
-            }));
+            setInputValues(prev => ({ ...prev, [key]: value }));
+
+            if (dataMapping[key]) {
+                const propertyName = dataMapping[key].name;
+                let filterParams;
+
+                // Check if the propertyName corresponds to a related field where you want to use icontains
+                if (propertyName === 'username' || propertyName === 'name') {
+                    filterParams = { [`${key}__${propertyName}__icontains`]: value }; // Using icontains
+                } else {
+                    filterParams = { [`${key}__${propertyName}`]: value }; // Default exact match
+                }
+
+                setFilterQuery(prev => ({
+                    ...prev,
+                    ...filterParams
+                }));
+            } else {
+                const filterParams = { [key]: value };
+
+                setFilterQuery(prev => ({
+                    ...prev,
+                    ...filterParams
+                }));
+            }
         };
 
         const handleViewValue = async (value) => {
-            if (value === "my_contacts") {
+            if (value === "my_tickets") {
                 const newFilterQuery = { owner__num_id: `${user.num_id}` }
                 dispatch(setCurrentPage('1'))
                 handleFilterChange(newFilterQuery)
                 dispatch(setFilterParams(newFilterQuery))
-            } else if (value === "all_contacts") {
+            } else if (value === "all_tickets") {
                 handleClear()
             }
         }
@@ -103,7 +150,6 @@ const Ticket = () => {
         }
 
         const handleSearch = () => {
-            console.log("button clicked")
             dispatch(setFilterParams(filterQuery))
         }
 
@@ -119,7 +165,7 @@ const Ticket = () => {
                 <div className="flex-1 p-2 space-y-1 bg-transparent dark:bg-gray-800 overflow-y-auto">
                     {/* Header */}
                     <header className="text-3xl font-bold text-gray-800 dark:text-gray-200">
-                        Contacts
+                        Tickets
                     </header>
 
                     {/* Actions Section Dynamically Loaded */}
@@ -135,7 +181,7 @@ const Ticket = () => {
                                 </Button>
                                 <Button className='min-w-24 bg-gray-900 hover:bg-gray-100 hover:text-gray-900 hover:border-gray-900 hover:border-[1px]'>
                                     <PlusIcon />
-                                    Add New Contact
+                                    Create Ticket
                                 </Button>
                             </div>
 
@@ -147,8 +193,8 @@ const Ticket = () => {
                                             <SelectValue placeholder="Select a View" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="my_contacts">My Contacts</SelectItem>
-                                            <SelectItem value="all_contacts">All Contacts</SelectItem>
+                                            <SelectItem value="my_tickets">My Tickets</SelectItem>
+                                            <SelectItem value="all_tickets">All Tickets</SelectItem>
                                         </SelectContent>
                                     </Select>
                                 </div>
@@ -182,7 +228,7 @@ const Ticket = () => {
 
 
                                             <PaginationItem className='cursor-pointer'>
-                                                <PaginationNext onClick={() => handlePageChange(Math.min(currentPage + 1, totalPages))} />
+                                                <PaginationNext onClick={() => handlePageChange(Math.min(currentPage + 1, totalPages))} disabled={totalPages <= currentPage ? true : false} />
                                             </PaginationItem>
                                         </PaginationContent>
                                     </Pagination>
@@ -195,8 +241,8 @@ const Ticket = () => {
                     )
                         :
                         <Actions
-                            entityType="contact"
-                            actions={contactActions}
+                            entityType="ticket"
+                            actions={ticketActions}
                             selectedRecord={selectedRecord}
                             setSelectedRecord={setSelectedRecord}
                             selectedTab={selectedTab}
@@ -208,17 +254,18 @@ const Ticket = () => {
                     {!selectedRecord ? (
                         <div style={{ width: '100%', height: '68.5vh' }} className='overflow-y-scroll'>
                             <DataTable
-                                data={ContactData}
+                                data={ticketData}
                                 columns={columns}
                                 onRowClick={handleRowClick}
                                 onFilterChange={handleFilterChange}
                                 onSort={handleSort}
-                                filters={filterQuery}
+                                inputValues={inputValues}
                                 orderBy={orderBy}
+                                dataMapping={dataMapping}
                             />
                         </div>
                     ) : (
-                        <ContactDetail contact={selectedRecord} />
+                        <TicketDetail ticketData={selectedRecord} />
                     )}
                 </div>
             </div >

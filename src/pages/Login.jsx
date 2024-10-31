@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { CheckCircleIcon } from 'lucide-react'
+import { CheckCircleIcon, SendIcon, LoaderCircle } from 'lucide-react'
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useDispatch, useSelector } from 'react-redux';
@@ -38,10 +38,14 @@ const Login = () => {
                     navigate('/')
                     window.location.reload(true);
                 } if (result.error) {
-                    setAlert({
+                    result.error.message.includes("401") ? setAlert({
                         type: 'error',
-                        message: `Login failed! ${result.error}`
-                    })
+                        message: `Login failed! ${result.error.message}. Please check your credentials and try again`
+                    }) :
+                        setAlert({
+                            type: 'error',
+                            message: `Login failed! ${result.error.message}`
+                        })
                 }
             })
         }
@@ -124,7 +128,12 @@ const Login = () => {
                                 className="w-full py-3 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 dark:from-red-500 dark:to-red-600 dark:hover:from-red-600 dark:hover:to-red-700 text-white font-bold rounded-lg transition duration-300"
                                 onClick={handleLogin}
                             >
-                                {loading ? 'Loading' : "Log In"}
+                                {loading ? (
+                                    <><LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
+                                        Please wait</>
+                                ) : (
+                                    <>Log-In<SendIcon /></>
+                                )}
                             </Button>
                         </CardContent>
                     </form>

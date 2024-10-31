@@ -94,7 +94,7 @@ const sidebarItems = [
     {
         id: 4,
         name: 'Companies',
-        link: '/dashboard',
+        link: '/company',
         icon: <Building2 className="h-4 w-4" />,
         type: 'link'
     },
@@ -115,7 +115,7 @@ const sidebarItems = [
     {
         id: 7,
         name: 'Tasks',
-        link: '/dashboard',
+        link: '/tasks',
         icon: <LayoutList className="h-4 w-4" />,
         type: 'link'
     },
@@ -129,14 +129,14 @@ const sidebarItems = [
     {
         id: 9,
         name: 'Opportunities',
-        link: '/dashboard',
+        link: '/opportunity',
         icon: <ShoppingCart className="h-4 w-4" />,
         type: 'link'
     },
     {
         id: 10,
         name: 'Campaigns',
-        link: '/dashboard',
+        link: '/campaign',
         icon: <CalendarClock className="h-4 w-4" />,
         type: 'link'
     },
@@ -150,42 +150,42 @@ const sidebarItems = [
     {
         id: 12,
         name: 'Users',
-        link: '/dashboard',
+        link: '/users',
         icon: <ContactRound className="h-4 w-4" />,
         type: 'link'
     },
     {
         id: 13,
         name: 'Groups',
-        link: '/dashboard',
+        link: '/groups',
         icon: <UsersRound className="h-4 w-4" />,
         type: 'link'
     },
     {
         id: 14,
         name: 'Types',
-        link: '/dashboard',
+        link: '/types',
         icon: <Tag className="h-4 w-4" />,
         type: 'link'
     },
     {
         id: 15,
         name: 'Sub Types',
-        link: '/dashboard',
+        link: '/subtypes',
         icon: <FileBox className="h-4 w-4" />,
         type: 'link'
     },
     {
         id: 16,
         name: 'Analytics',
-        link: '/dashboard',
+        link: '/analytics',
         icon: <ChartLine className="h-4 w-4" />,
         type: 'link'
     },
     {
         id: 17,
         name: 'News Feed',
-        link: '/dashboard',
+        link: '/feed',
         icon: <Rss className="h-4 w-4" />,
         type: 'link'
     },
@@ -346,7 +346,7 @@ const Layout = () => {
                 </header>
             </div>
             {/* Main Scrollable Content */}
-            <main className="mt-[60px] ml-[220px] lg:ml-[280px] p-4 lg:p-6">
+            <main className="mt-[55px] ml-[220px] lg:ml-[280px] p-4 lg:p-6">
                 <Outlet />
             </main>
 
