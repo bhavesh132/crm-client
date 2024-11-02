@@ -25,7 +25,7 @@ import { setCurrentPage, setPageSize, setTotalCount } from '../features/generics
 import { setFilterParams } from '../features/generics/filterSlice'
 import { setSortingParams } from '../features/generics/filterSlice'
 import { Button } from '@/components/ui/button'
-import { PlusIcon } from 'lucide-react';
+import { Pencil, PlusIcon } from 'lucide-react';
 
 const columns = [
     { key: "num_id", label: "ID" },
@@ -51,7 +51,7 @@ const Contact = () => {
     const { orderBy, filters } = useSelector((state) => state.filter)
 
     const contactActions = [
-        { label: "Edit", action: () => editContact(selectedRecord) },
+        { label: "Edit", action: () => editContact(selectedRecord), icon: <Pencil /> },
         { label: "Delete", action: () => deleteContact(selectedRecord) },
         { label: "Send Email", action: () => setSelectedRecord(null) },
         { label: "Back", action: () => setSelectedRecord(null) },

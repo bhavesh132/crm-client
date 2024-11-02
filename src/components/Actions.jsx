@@ -8,13 +8,13 @@ const Actions = ({ setSelectedTab, setSelectedRecord, selectedRecord, actions })
 
     return (
         <div className="action-buttons">
-            {actions.map((action, index) => (
+            {actions.map((actions, index) => (
                 <Button
                     key={index}
-                    className="p-2 w-[96px] text-white rounded-lg m-2"
-                    onClick={action.action} // Call the corresponding action function
+                    className="px-2 w-[96px] text-gray-800 rounded-lg m-2 hover:shadow-md bg-gray-200 hover:bg-gray-100 border-r-0"
+                    onClick={actions.action} // Call the corresponding action function
                 >
-                    {action.label}
+                    {actions.icon}{actions.label}
                 </Button>
             ))}
         </div>
