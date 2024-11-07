@@ -6,10 +6,10 @@ const DataTable = ({ data, columns, onRowClick, onFilterChange, onSort, inputVal
     // Define styles for specific headers
     const headerStyles = {
         priority: {
-            p3: 'bg-green-400 text-green-800',
-            p4: 'bg-blue-300 text-blue-900',
+            p3: 'bg-green-600 text-gray-50',
+            p4: 'bg-blue-500 text-gray-50',
             p2: 'bg-orange-500 text-gray-50',
-            p1: 'bg-red-700 text-gray-200'
+            p1: 'bg-red-600 text-gray-50'
         },
         status: {
             assigned: 'bg-orange-600 text-gray-100',
@@ -17,9 +17,9 @@ const DataTable = ({ data, columns, onRowClick, onFilterChange, onSort, inputVal
             completed: 'bg-green-700 text-gray-100',
             cancelled: 'bg-gray-900 text-gray-100',
             pending: 'bg-yellow-200 text-yellow-800',
-            'needs-review': 'bg-yellow-200 text-yellow-800',
+            'needs-review': 'bg-amber-600 text-yellow-50',
             'in-progress': 'bg-blue-600 text-blue-100',
-            new: 'bg-green-300 text-gray-900'
+            new: 'bg-indigo-800 text-gray-100'
         },
     };
 
@@ -44,7 +44,7 @@ const DataTable = ({ data, columns, onRowClick, onFilterChange, onSort, inputVal
         const content = header === 'priority' ? priorityText[value.toLowerCase()] || capitalizeContent(header, value) : capitalizeContent(header, value);
         if (headerStyles[header] && headerStyles[header][value.toLowerCase()]) {
             const styleClasses = headerStyles[header][value.toLowerCase()];
-            return <span className={`block w-2/3 whitespace-nowrap overflow-hidden text-center px-2 py-1 text-ellipsis ${styleClasses}`}>{content}</span>;
+            return <div className='flex justify-center'><span className={`block w-[150px] whitespace-nowrap overflow-hidden text-center px-2 py-1 text-ellipsis ${styleClasses}`}>{content}</span></div>;
         }
         return content;
     };
@@ -53,12 +53,12 @@ const DataTable = ({ data, columns, onRowClick, onFilterChange, onSort, inputVal
     return (
         <div className="overflow-x-auto shadow-md sm:rounded-lg bg-white dark:bg-gray-900">
             <table className="min-w-full overflow-y-auto text-sm text-left text-gray-700 dark:text-gray-300">
-                <thead className='sticky top-0 z-10 min-w-[40px] max-w-[100px] text-nowrap overflow-hidden'>
-                    <tr>
+                <thead className='sticky top-0 z-10 w-[40px] text-nowrap overflow-hidden'>
+                    <tr className=''>
                         {columns.map((col) => (
                             <th
                                 key={col.key}
-                                className={`${col.label === "ID" ? 'min-w-20' : 'min-w-80'} px-4 py-2 text-left text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-900 border-b border-gray-300 dark:border-gray-700`}
+                                className={`${col.label === "ID" ? 'min-w-20' : 'min-w-80'}  px-4 py-2 text-left text-gray-800 dark:text-gray-300 bg-gray-50 dark:bg-gray-900 border-b border-gray-300 dark:border-gray-700`}
                             >
                                 <div className="flex items-center space-x-2">
                                     <span>{col.label}</span>
@@ -85,8 +85,8 @@ const DataTable = ({ data, columns, onRowClick, onFilterChange, onSort, inputVal
                                 {/* Filter input */}
                                 <input
                                     type="text"
-                                    className="mt-1 border border-gray-300 dark:border-gray-700 p-2 rounded-lg w-full text-sm dark:bg-gray-900 dark:text-gray-300"
-                                    placeholder={`${col.label}`}
+                                    className="mt-1 p-1 px-2 w-full text-sm border-[1px] focus:border-[1.5px] focus:border-purple-400 focus:outline-none"
+
                                     value={inputValues[col.key] || ''}
                                     onChange={(e) => onFilterChange(col.key, e.target.value)}
                                 />
@@ -98,7 +98,7 @@ const DataTable = ({ data, columns, onRowClick, onFilterChange, onSort, inputVal
                     {data.map((row, idx) => (
                         <tr
                             key={idx}
-                            className="cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700"
+                            className="cursor-pointer hover:bg-indigo-100 dark:hover:bg-gray-700 transition duration-1150 ease-in-out"
                             onClick={() => onRowClick(row)}
                         >
                             {columns.map((col) => {

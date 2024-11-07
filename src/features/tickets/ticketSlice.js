@@ -12,8 +12,8 @@ const initialState = {
 
 export const getAllTickets = createAsyncThunk(
     'service/allTickets',
-    async (_, { getState }) => {
-        const { filter, pagination } = getState(); // Access the 'contact' state directly
+    async (args, { getState }) => {
+        const { filter, pagination } = getState();
         const { pageSize, currentPage } = pagination
         const { orderBy, filters } = filter;
         const request = await axiosInstance.get(`service/ticket/`, {
@@ -21,9 +21,19 @@ export const getAllTickets = createAsyncThunk(
                 page_size: pageSize,
                 page: currentPage,
                 order_by: orderBy,
-                ...filters
+                ...filters,
+                ...args
             }
         })
+        const response = request.data
+        return response
+    }
+)
+
+export const getTicketbyId = createAsyncThunk(
+    'service/getTicketDetails',
+    async (id, { getState }) => {
+        const request = await axiosInstance.get(`service/ticket/${id}/`)
         const response = request.data
         return response
     }
@@ -35,6 +45,9 @@ export const ticketSlice = createSlice({
     initialState,
     name: 'ticket',
     reducers: {
+        setLoading: (state, action) => {
+            state.loading = action.payload
+        }
     },
     extraReducers: (builder) => {
         builder
@@ -51,10 +64,23 @@ export const ticketSlice = createSlice({
                 state.error = action.error
                 state.isError = true
             })
+            .addCase(getTicketbyId.pending, (state) => {
+                state.loading = true
+            })
+            .addCase(getTicketbyId.fulfilled, (state, action) => {
+                state.ticketDetail = action.payload
+                state.loading = false
+            })
+            .addCase(getTicketbyId.rejected, (state, action) => {
+                state.loading = false
+                state.error = action.error
+                state.isError = true
+            })
     }
 })
 
 
+export const { setLoading } = ticketSlice.actions
 
 export default ticketSlice.reducer
 

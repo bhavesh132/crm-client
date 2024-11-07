@@ -1,6 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
 import userReducer from '../user/userSlice'
-import dashboardReducer from '../dashboard/dashboardSlice'
 import contactReducer from "../contacts/contactSlice";
 import paginationReducer from "../generics/paginationSlice"
 import auditReducer from "../audits/auditSlice"
@@ -12,7 +11,6 @@ export const store = configureStore({
     reducer: {
         global: globalReducer,
         user: userReducer,
-        dashboard: dashboardReducer,
         contact: contactReducer,
         pagination: paginationReducer,
         audit: auditReducer,

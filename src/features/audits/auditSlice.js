@@ -54,7 +54,7 @@ export const auditSlice = createSlice({
             })
             .addCase(getInstanceDetail.fulfilled, (state, action) => {
                 state.loading = false
-                state.instance = { ...state.instance, ...action.payload }
+                state.instance = action.payload
             })
             .addCase(getInstanceDetail.rejected, (state, action) => {
                 state.loading = false

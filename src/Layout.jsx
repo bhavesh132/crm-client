@@ -23,7 +23,6 @@ import {
 } from "lucide-react"
 import Logo from './components/ui/LogoCrm.svg'
 import { Button } from "@/components/ui/button"
-import { Moon, Sun } from "lucide-react"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -43,8 +42,8 @@ import { useDispatch } from 'react-redux'
 const sidebarItems = [
     {
         id: 1,
-        name: 'Dashboard',
-        link: '/dashboard',
+        name: 'Home',
+        link: '/home',
         icon: <Home className="h-4 w-4" />,
         type: 'link'
     },

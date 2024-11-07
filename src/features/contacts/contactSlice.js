@@ -44,7 +44,11 @@ export const getContactDetails = createAsyncThunk(
 export const contactSlice = createSlice({
     name: 'contact',
     initialState,
-    reducers: {},
+    reducers: {
+        setLoading: (state, action) => {
+            state.loading = action.payload
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(getAllContacts.pending, (state) => {
@@ -75,5 +79,6 @@ export const contactSlice = createSlice({
     }
 })
 
+export const { setLoading } = contactSlice.actions
 
 export default contactSlice.reducer
