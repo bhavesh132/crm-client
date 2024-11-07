@@ -196,7 +196,7 @@ export default function ContactDetailsPage() {
                                             className="px-8 py-2 relative w-full bg-white shadow-sm rounded-sm cursor-pointer hover:shadow-md"
                                             onClick={() => navigate(`/tickets/${item.id}`)}>
                                             <span
-                                                className={`absolute left-0 top-0 h-full w-[15px] rounded-l-sm ${item.priority === 'p1' ? 'bg-red-500' : item.priority === 'p2' ? 'bg-orange-500' : task.priority === 'p3' ? 'bg-blue-500' : 'bg-green-500'}`}
+                                                className={`absolute left-0 top-0 h-full w-[15px] rounded-l-sm ${item.priority === 'p1' ? 'bg-red-500' : item.priority === 'p2' ? 'bg-orange-500' : item.priority === 'p3' ? 'bg-blue-500' : 'bg-green-500'}`}
                                             ></span>
                                             <p className="text-sm text-gray-800">[{item.num_id}]: {item.title}</p>
                                             <p className="text-sm text-gray-500">{item.owner.first_name} {item.owner.last_name}</p>
