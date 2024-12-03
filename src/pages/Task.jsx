@@ -28,7 +28,7 @@ const Task = () => {
                     <ListTable />
                 </TabsContent>
 
-                <TabsContent value="calendar">
+                <TabsContent value="calendar" className='h-full'>
                     <TaskCalendar />
                 </TabsContent>
             </Tabs>
