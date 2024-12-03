@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Mail, Phone, Calendar, User, Briefcase, CircleArrowLeft, MailIcon, Pencil, Trash2 } from "lucide-react";
 import { useSelector, useDispatch } from 'react-redux';
 import { getAllTickets } from "../tickets/ticketSlice";
+
 import { getRecentActivity, getInstanceDetail } from "../audits/auditSlice"
 import { formatDate, formatTime, capitalizeFirstLetter } from "../../lib/utils";
 import Loader from "../../pages/generics/Loader";
@@ -36,35 +37,37 @@ export default function ContactDetailsPage() {
         // audit: getAuditLog(),
     };
 
-    const handleTabChange = (value) => {
-        const action = tabActions[value];
-        setLoading(true)
-        if (action) {
-            action()
-                .then(response => {
-                    setRecords(response.payload.data)
-                    setActiveTab(value);
-                })
-                .catch(error => {
-                    console.error('Error fetching records:', error);
-                });
-        } else {
-            console.log('Invalid tab');
+    const handleTabChange = async (value) => {
+    setLoading(true);
+    const action = tabActions[value];
+    if (action) {
+        try {
+            const response = await action();
+            setRecords(response.payload.data);
+            setActiveTab(value);
+        } catch (error) {
+            console.error('Error fetching records:', error);
+        } finally {
+            setLoading(false);
         }
-    };
+    } else {
+        console.log('Invalid tab');
+        setLoading(false);
+    }
+};
+
 
     const fetchDetails = async (value) => {
-        setLoading(true);
-        const response = await dispatch(getInstanceDetail({
-            app_label: 'authentication',
-            model_name: 'User',
-            object_id: value
-        }));
-        tabActions.tickets().then(res => {
-            setRecords(res.payload.data)
-        })
-        setOwner(response.payload.data);
-        setLoading(false);
+       setLoading(true); 
+       const response = await dispatch(getInstanceDetail({ 
+        app_label: 'authentication', 
+        model_name: 'User', 
+        object_id: value 
+    })); 
+    setOwner(response.payload.data); 
+    const ticketsResponse = await tabActions.tickets(); 
+    setRecords(ticketsResponse.payload.data); 
+    setLoading(false);
     };
 
 
@@ -75,7 +78,7 @@ export default function ContactDetailsPage() {
     useEffect(() => {
         if (contactDetail) {
             setContact(contactDetail);
-            fetchDetails(contactDetail.owner);
+            fetchDetails(contactDetail.owner).then(() => { tabActions.tickets(); });
         }
     }, [contactDetail]);
 
