@@ -13,6 +13,18 @@ import {
     PaginationPrevious,
 } from "@/components/ui/pagination"
 
+import AddContact from '../features/contacts/AddContact';
+
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
+
+
 import {
     Select,
     SelectContent,
@@ -141,10 +153,24 @@ const Contact = () => {
                             <Button onClick={handleSearch} className='min-w-24 hover:bg-violet-900 mr-14 hover:text-gray-50'>
                                 Search
                             </Button>
-                            <Button className='min-w-24 bg-gray-900 hover:bg-gray-100 hover:text-gray-900 hover:border-gray-900 hover:border-[1px]'>
-                                <PlusIcon />
-                                Add New Contact
-                            </Button>
+                            <Sheet>
+                            <SheetTrigger className='min-w-24 bg-gray-900 rounded-md text-gray-50 p-2 w-fit transition-all ease-in-out hover:bg-gray-100 hover:text-gray-900 hover:border-gray-900 hover:border-[1px]'> 
+                                <div className='flex flex-row justify-evenly align-middle items-center'>
+                                    <span className='text-sm'><PlusIcon /></span>
+                                        <span className='text-sm'>Add New Contact</span>
+                                </div>
+                                
+                            </SheetTrigger>
+                            <SheetContent>
+                                <SheetHeader>
+                                <SheetTitle>Fill this form to Add new Contact</SheetTitle>
+                                <SheetDescription>
+                                    <AddContact />
+                                </SheetDescription>
+                                </SheetHeader>
+                            </SheetContent>
+                            </Sheet>
+                           
                         </div>
 
                         <div className='flex mt-4 flex-row justify-end items-center w-full'>

@@ -31,6 +31,18 @@ export const getAllContacts = createAsyncThunk(
     }
 )
 
+export const createContact = createAsyncThunk(
+  'contacts/createContact',
+  async (newContactData, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.post('/customer/contact/', newContactData);
+      return response.data; 
+    } catch (err) {
+      return rejectWithValue(err.response.data);  
+    }
+  }
+);
+
 export const getContactDetails = createAsyncThunk(
     'customer/getContactDetail',
     async (id) => {
@@ -40,6 +52,17 @@ export const getContactDetails = createAsyncThunk(
     }
 )
 
+
+export const updateContact = createAsyncThunk(
+    'contacts/updateContact',
+     async ({ id, data }, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.put(`/customer/contact/${id}/`, data);
+            return response.data;
+        } catch (err) {
+            return rejectWithValue(err.response.data);
+        }
+    })
 
 export const contactSlice = createSlice({
     name: 'contact',
@@ -75,6 +98,17 @@ export const contactSlice = createSlice({
                 state.loading = false
                 state.error = action.error
                 state.isError = true
+            })
+            .addCase(createContact.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(createContact.fulfilled, (state, action) => {
+                state.loading = false;
+                state.contactDetail = action.payload;
+            })
+            .addCase(createContact.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
             })
     }
 })

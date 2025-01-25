@@ -5,26 +5,8 @@ import { Card, CardTitle } from "@/components/ui/card";
 import { Bird, ListCheck } from 'lucide-react';
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { capitalizeFirstLetter, formatDate, formatTime } from '../lib/utils';
-// Dummy user and tasks data
-const user = {
-    "num_id": 1,
-    "groups": [],
-    "password": "pbkdf2_sha256$870000$1OM0ZCGfvwaOw03zEewhDt$1ibH0Wmc2ovna1Fa10lU5y9HzgZJO7vomeKSEL3VTuw=",
-    "last_login": "2024-11-03T11:00:51.290570+05:30",
-    "is_superuser": true,
-    "username": "bruce.aggarwal",
-    "first_name": "Bhavesh",
-    "last_name": "Aggarwal",
-    "is_staff": true,
-    "is_active": true,
-    "date_joined": "2024-09-02T11:02:52+05:30",
-    "id": "2fa5a561-fcf0-4cfc-a4a4-a81137195332",
-    "role": "Service Engineer",
-    "email": "bruce.a@brightpath.com",
-    "phone_number": "",
-    "modified_by": null,
-    "user_permissions": []
-};
+import { useSelector } from 'react-redux';
+
 
 const countTasksByStatus = (status) =>
     tasks.filter((task) => task.status === status).length;
@@ -47,6 +29,7 @@ const countUpcomingTasks = () => {
 };
 
 const Home = () => {
+    const user = useSelector((state)=> state.global.user)
     const [currentTime, setCurrentTime] = useState(new Date());
 
     // Update time every second

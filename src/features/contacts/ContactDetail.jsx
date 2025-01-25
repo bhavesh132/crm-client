@@ -5,21 +5,24 @@ import { Badge } from "@/components/ui/badge";
 import { Mail, Phone, Calendar, User, Briefcase, CircleArrowLeft, MailIcon, Pencil, Trash2 } from "lucide-react";
 import { useSelector, useDispatch } from 'react-redux';
 import { getAllTickets } from "../tickets/ticketSlice";
-
+import Modal from "../../components/ui/Modal";
 import { getRecentActivity, getInstanceDetail } from "../audits/auditSlice"
 import { formatDate, formatTime, capitalizeFirstLetter } from "../../lib/utils";
 import Loader from "../../pages/generics/Loader";
 import Actions from '../../components/Actions'
 import { useNavigate, useParams } from 'react-router-dom';
-import { getContactDetails } from "./contactSlice";
-import { setLoading } from "./contactSlice";
+import { getContactDetails, updateContact } from "./contactSlice";
+import ErrorPage from "../../pages/generics/Error";
+import EditContactForm from "./EditContact";
 
 export default function ContactDetailsPage() {
     const { id } = useParams();
     const [activeTab, setActiveTab] = useState("details");
+    const [localLoader, setLocalLoader] = useState(false);
     const [contact, setContact] = useState(null)
     const [records, setRecords] = useState([])
-    const [owner, setOwner] = useState(null)
+    const ticketsData = useSelector((state) => state.ticket.data);
+    const [showEditModal, setShowEditModal] = useState(false);
     const dispatch = useDispatch();
     const navigate = useNavigate()
 
@@ -29,69 +32,72 @@ export default function ContactDetailsPage() {
         isError, loading } = useSelector((state) => state.contact);
 
     const tabActions = {
-        details: () => fetchDetails(contact?.owner),
+        details: () => {return},
         tickets: () => dispatch(getAllTickets({ customer_id__id: contact.id })),
-        // tasks: getTasks(),
         // opportunities: getOpportunities(),
         // campaigns: getCampaigns(),
         // audit: getAuditLog(),
     };
 
     const handleTabChange = async (value) => {
-    setLoading(true);
+    setLocalLoader(true);
     const action = tabActions[value];
     if (action) {
         try {
             const response = await action();
-            setRecords(response.payload.data);
+            setRecords(response.data);
+            console.log(response);
             setActiveTab(value);
         } catch (error) {
             console.error('Error fetching records:', error);
         } finally {
-            setLoading(false);
+            setLocalLoader(false);
         }
     } else {
         console.log('Invalid tab');
-        setLoading(false);
+        setLocalLoader(false);
     }
 };
 
-
-    const fetchDetails = async (value) => {
-       setLoading(true); 
-       const response = await dispatch(getInstanceDetail({ 
-        app_label: 'authentication', 
-        model_name: 'User', 
-        object_id: value 
-    })); 
-    setOwner(response.payload.data); 
-    const ticketsResponse = await tabActions.tickets(); 
-    setRecords(ticketsResponse.payload.data); 
-    setLoading(false);
-    };
-
-
     useEffect(() => {
         dispatch(getContactDetails(id));
-    }, [dispatch, id]);
+    }, [id]);
+
+    useEffect(() => {
+        setLocalLoader(true)
+        if(contact){
+            dispatch(getAllTickets({ customer_id__id: contact.id }));
+        }
+        setLocalLoader(false)
+    }, [contact]);
 
     useEffect(() => {
         if (contactDetail) {
             setContact(contactDetail);
-            fetchDetails(contactDetail.owner).then(() => { tabActions.tickets(); });
         }
     }, [contactDetail]);
 
+    useEffect(() => {
+        setRecords(ticketsData);
+    }, [ticketsData]);
+
     const contactActions = [
-        { label: "Edit", action: () => editContact(selectedRecord), icon: <Pencil />, color: 'from-yellow-500 to-yellow-500 hover:from-yellow-500 hover:to-yellow-500' },
-        { label: "Delete", action: () => deleteContact(selectedRecord), icon: <Trash2 />, color: 'from-red-500 to-red-500 hover:from-red-500 hover:to-red-500' },
+        { label: "Edit", action: () => setShowEditModal(true), icon: <Pencil />, color: 'from-yellow-500 to-yellow-500 hover:from-yellow-500 hover:to-yellow-500' },
+        { label: "Delete", action: () => deleteContact(contactDetail), icon: <Trash2 />, color: 'from-red-500 to-red-500 hover:from-red-500 hover:to-red-500' },
         { label: "Send Email", action: () => setSelectedRecord(null), icon: <MailIcon />, color: 'from-violet-500 to-violet-500 hover:from-violet-500 hover:to-violet-500' },
         { label: "Back", action: () => navigate(`/contact`), icon: <CircleArrowLeft />, color: 'from-gray-500 to-gray-500 hover:from-gray-500 hover:to-gray-500' },
     ];
 
-
-    const closeStatus = ["cancelled", "completed", "closed"];
-    const openTickets = records.filter(record => !closeStatus.includes(record.status));
+    const handleEditContact = async (updatedContact) => {
+        try {
+            await dispatch(updateContact({ id: contactDetail.id, data: updatedContact }));
+            await dispatch(getContactDetails(id));
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setShowEditModal(false);
+        }
+    };
 
     const handleRelatedClick = (cardType, records) => {
         if (cardType === "open") {
@@ -102,17 +108,25 @@ export default function ContactDetailsPage() {
         }
     }
 
-    if (loading) return <Loader />;
+    if (loading || !records) return <Loader />;
     if (isError) return <ErrorPage message={error.message} />;
-    if (!contact) return <Loader />
-    if (contact) {
-
+    if (!contact) return <ErrorPage message='No contact found' />;
+    if (contact && records) {
+            const closeStatus = ["cancelled", "completed", "closed"];
+            const openTickets = records.filter(record => !closeStatus.includes(record.status));
         return (
             <div className="flex-1 p-2 space-y-1 bg-transparent dark:bg-gray-800 overflow-y-auto">
                 <Actions
                     entityType="contact"
                     actions={contactActions}
                 />
+
+                 <Modal
+                    isOpen={showEditModal}
+                    title="Edit Contact"
+                    content={<EditContactForm contact={contactDetail} onClose={() => setShowEditModal(false)} onSubmit={handleEditContact} />}
+                />
+
                 <div className="container mx-auto my-6 p-4 space-y-6">
                     <h1 className="text-2xl font-bold text-gray-800">{contact.full_name} - {contact.title}</h1>
                     <Tabs defaultValue="details" onValueChange={(value) => handleTabChange(value)}>
@@ -140,7 +154,7 @@ export default function ContactDetailsPage() {
                                     <p className="text-sm text-gray-500">{contact.title} at {contact.company_name}</p>
                                 </CardHeader>
 
-                                {loading ? (
+                                {localLoader ? (
                                     <Loader />
                                 ) : (
                                     <CardContent className="space-y-4">
@@ -158,7 +172,7 @@ export default function ContactDetailsPage() {
                                         </div>
                                         <div className="flex items-center space-x-2 text-gray-600">
                                             <User className="w-5 h-5" />
-                                            <span>Owner: {owner ? `${owner.first_name} ${owner.last_name}` : 'N/A'}</span>
+                                            <span>Owner: {contact.owner.first_name} {contact.owner.last_name}</span>
                                         </div>
 
                                         <div className="grid grid-cols-3 gap-6 mt-4">

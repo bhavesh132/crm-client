@@ -4,15 +4,14 @@ import { CheckCircleIcon, SendIcon, LoaderCircle } from 'lucide-react'
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useDispatch, useSelector } from 'react-redux';
-import { loginUser } from '../features/user/userSlice';
+import { loginUser } from '../features/user/authslice';
 import { useNavigate } from 'react-router';
 import Alert from '@/components/ui/Alert'
 
 const Login = () => {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
-    const [alert, setAlert] = useState(null); // State to hold the alert details
-
+    const [alert, setAlert] = useState(null); 
     const { loading, error } = useSelector((state) => state.user)
 
     const dispatch = useDispatch()
@@ -88,7 +87,7 @@ const Login = () => {
                     <Alert
                         type={alert.type}
                         message={alert.message}
-                        onActionClick={() => setAlert(null)} // Close the alert when action button is clicked
+                        onActionClick={() => setAlert(null)}
                     />
                 )}
                 <Card className="w-full max-w-md p-6 bg-white dark:bg-gray-800 shadow-lg rounded-lg">

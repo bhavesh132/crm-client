@@ -1,7 +1,7 @@
 import React from 'react'
 import { Outlet, useNavigate } from 'react-router'
 import { Link } from "react-router-dom"
-import { logoutUser } from './features/user/userSlice';
+import { logoutUser } from './features/user/authSlice';
 import Cookies from 'js-cookie';
 import { useLocation } from 'react-router';
 import {
@@ -181,19 +181,15 @@ const Layout = () => {
                 navigate('/login')
                 window.location.reload(true);
             })
-            // Redirect to login page after logout
         } catch (error) {
             console.log('Logout failed: ', error);
-            // Optional: Show an error alert if logout fails
         }
-
     }
 
     const [isScrolled, setIsScrolled] = useState(false);
 
     useEffect(() => {
         const handleScroll = () => {
-            // Check if the page is scrolled by more than 50px (or any threshold you prefer)
             if (window.scrollY > 50) {
                 setIsScrolled(true);
             } else {
@@ -201,10 +197,8 @@ const Layout = () => {
             }
         };
 
-        // Add event listener for scroll
         window.addEventListener("scroll", handleScroll);
 
-        // Clean up the event listener when component unmounts
         return () => {
             window.removeEventListener("scroll", handleScroll);
         };
