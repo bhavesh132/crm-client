@@ -1,7 +1,14 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-
 import { axiosInstance } from "../../lib/utils";
 import Cookies from "js-cookie";
+
+
+const initialState = {
+    user: null,
+    isAuthenticated: false,
+    error: null,
+    loading: false
+}
 
 export const loginUser = createAsyncThunk(
     'user/loginUser',
@@ -34,12 +41,6 @@ export const logoutUser = createAsyncThunk(
 )
 
 
-const initialState = {
-    user: null,
-    isAuthenticated: false,
-    error: null,
-    loading: false
-}
 
 export const authSlice = createSlice({
     name: 'auth',
@@ -52,7 +53,6 @@ export const authSlice = createSlice({
             .addCase(loginUser.pending, (state) => {
                 state.loading = true
                 state.error = null
-                state.user = null
             })
             .addCase(loginUser.fulfilled, (state, action) => {
                 state.loading = false

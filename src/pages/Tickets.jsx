@@ -64,7 +64,7 @@ const dataMapping = {
 };
 
 const Ticket = () => {
-    const { user } = useSelector((state) => state.global);
+    const { user } = JSON.parse(localStorage.getItem('user'))
     const { pageSize, currentPage } = useSelector((state) => state.pagination);
     const [inputValues, setInputValues] = useState({});
     const navigate = useNavigate();

@@ -32,32 +32,31 @@ export default function ContactDetailsPage() {
         isError, loading } = useSelector((state) => state.contact);
 
     const tabActions = {
-        details: () => {return},
         tickets: () => dispatch(getAllTickets({ customer_id__id: contact.id })),
         // opportunities: getOpportunities(),
         // campaigns: getCampaigns(),
         // audit: getAuditLog(),
     };
 
-    const handleTabChange = async (value) => {
-    setLocalLoader(true);
-    const action = tabActions[value];
-    if (action) {
-        try {
-            const response = await action();
-            setRecords(response.data);
-            console.log(response);
-            setActiveTab(value);
-        } catch (error) {
-            console.error('Error fetching records:', error);
-        } finally {
-            setLocalLoader(false);
-        }
-    } else {
-        console.log('Invalid tab');
-        setLocalLoader(false);
-    }
-};
+//     const handleTabChange = async (value) => {
+//     setLocalLoader(true);
+//     const action = tabActions[value];
+//     if (action) {
+//         try {
+//             const response = await action();
+//             setRecords(response.data);
+//             console.log(response);
+//             setActiveTab(value);
+//         } catch (error) {
+//             console.error('Error fetching records:', error);
+//         } finally {
+//             setLocalLoader(false);
+//         }
+//     } else {
+//         console.log('Invalid tab');
+//         setLocalLoader(false);
+//     }
+// };
 
     useEffect(() => {
         dispatch(getContactDetails(id));
@@ -74,6 +73,7 @@ export default function ContactDetailsPage() {
     useEffect(() => {
         if (contactDetail) {
             setContact(contactDetail);
+            console.log(contactDetail)
         }
     }, [contactDetail]);
 
@@ -128,7 +128,7 @@ export default function ContactDetailsPage() {
                 />
 
                 <div className="container mx-auto my-6 p-4 space-y-6">
-                    <h1 className="text-2xl font-bold text-gray-800">{contact.full_name} - {contact.title}</h1>
+                    <h1 className="text-2xl font-bold text-gray-800">{contact.full_name}: {contact.title}</h1>
                     <Tabs defaultValue="details" onValueChange={(value) => handleTabChange(value)}>
                         {/* Tabs Header */}
                         <TabsList className="flex border-b border-gray-200 space-x-4 justify-start">

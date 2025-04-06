@@ -29,7 +29,7 @@ const countUpcomingTasks = () => {
 };
 
 const Home = () => {
-    const user = useSelector((state)=> state.global.user)
+    const user = JSON.parse(localStorage.getItem('user'))
     const [currentTime, setCurrentTime] = useState(new Date());
 
     // Update time every second

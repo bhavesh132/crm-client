@@ -5,6 +5,7 @@ import Login from './pages/Login'
 import ProtectedRoute from './ProtectedRoute'
 import Contact from './pages/Contact'
 import Tickets from './pages/Tickets'
+import Company from './pages/Company'
 import NotFound from './pages/generics/NotFound'
 import Home from './pages/Home'
 import Task from './pages/Task'
@@ -27,6 +28,7 @@ function App() {
               <Route path='tickets' element={<ProtectedRoute element={Tickets} />} />
               <Route path='tickets/:id' element={<ProtectedRoute element={TicketDetail} />} />
               <Route path='tasks' element={<ProtectedRoute element={Task} />} />
+              <Route path='company' element={<ProtectedRoute element={Company} />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>

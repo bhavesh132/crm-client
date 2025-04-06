@@ -52,11 +52,11 @@ const dataMapping = {}
 
 const Contact = () => {
     const navigate = useNavigate()
-    const { user } = useSelector((state) => state.global);
+    const { user } = JSON.parse(localStorage.getItem('user'))
     const { pageSize, currentPage } = useSelector((state) => state.pagination);
     const [inputValues, setInputValues] = useState({});
     const dispatch = useDispatch();
-    const { data, loading, isError, error, totalCount } = useSelector((state) => state.contact);
+    const { data, loading, isError, error, totalCount, contactDetail } = useSelector((state) => state.contact);
     const [filterQuery, setFilterQuery] = useState({})
     const { orderBy, filters } = useSelector((state) => state.filter)
 
@@ -65,7 +65,7 @@ const Contact = () => {
     useEffect(() => {
         dispatch(getAllContacts())
         dispatch(setTotalCount(totalCount))
-    }, [dispatch, orderBy, pageSize, filters, currentPage])
+    }, [dispatch, orderBy, pageSize, filters, currentPage, contactDetail])
 
     if (loading) return <Loader />;
     if (isError) return <ErrorPage message={error.message} />;

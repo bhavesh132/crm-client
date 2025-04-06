@@ -287,7 +287,7 @@ const TicketDetail = () => {
                                     <div className="mb-4">
                                         <Accordion type="single" collapsible className="w-full">
                                             <AccordionItem value="cutomer-details">
-                                                <AccordionTrigger className="text-left text-lg font-semibold text-gray-700">Customer Details</AccordionTrigger>
+                                                <AccordionTrigger className="text-left text-lg font-semibold text-gray-700">Customer Details: {ticketData.customer_id.first_name} {ticketData.customer_id.last_name}</AccordionTrigger>
                                                 <AccordionContent>
                                                     <>
                                                         <hr className="my-2 border-gray-300" />
@@ -317,7 +317,7 @@ const TicketDetail = () => {
                                                 </AccordionContent>
                                             </AccordionItem>
                                             <AccordionItem value="user-details">
-                                                <AccordionTrigger className="text-left text-lg font-semibold text-gray-700">User Details</AccordionTrigger>
+                                                <AccordionTrigger className="text-left text-lg font-semibold text-gray-700">Agent Details: {ticketData.created_by.first_name} {ticketData.created_by.last_name}</AccordionTrigger>
                                                 <AccordionContent>
                                                     <>
                                                         <hr className="my-2 border-gray-300" />

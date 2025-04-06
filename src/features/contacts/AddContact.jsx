@@ -2,9 +2,11 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button'
 import { useDispatch } from 'react-redux';
 import { createContact } from './contactSlice';
+import Alert from '@/components/ui/Alert'
 
 function AddContactForm() {
   const dispatch = useDispatch();
+  const [alert, setAlert] = useState(null); 
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
@@ -12,7 +14,7 @@ function AddContactForm() {
     company_name: 'catchall',
     contact_type: 'lead',
     email: '',
-    contact_number: '',
+    contact_number: ''
   });
 
   const handleInputChange = (e) => {
@@ -25,22 +27,29 @@ function AddContactForm() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     const newContact = {
       ...formData,
     };
     console.log(newContact)
     try {
-      dispatch(createContact(newContact));  
+      dispatch(createContact(newContact));
+      setAlert({
+        type: 'success',
+        message: `Contact ${formData.first_name} created successfully!`
+      })
       console.log('Form submitted:', formData);
     } catch (error) {
+      setAlert({
+        type: 'error',
+        message: `Failed to create contact! ${error.message}`
+      })
       console.error('Error creating contact:', error);
     }
   };
   
 
   return (
-    <div className='w-full'>    
+    <div className='w-full'>
         <form onSubmit={handleSubmit} className="space-y-4 mt-6 p-6 bg-white rounded-lg shadow-lg">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
@@ -125,6 +134,19 @@ function AddContactForm() {
               value={formData.contact_number}
               onChange={handleInputChange}
               required
+              className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+            />
+          </div>
+          <div>
+            <label htmlFor="created_by" className="block text-sm font-medium">Created By</label>
+            <input
+              id="created_by"
+              name="created_by"
+              type="text"
+              value={JSON.parse(localStorage.getItem('user')).first_name + ' ' + JSON.parse(localStorage.getItem('user')).last_name}
+              onChange={handleInputChange}
+              required
+              disabled
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
             />
           </div>

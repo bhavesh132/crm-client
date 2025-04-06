@@ -4,7 +4,7 @@ import { CheckCircleIcon, SendIcon, LoaderCircle } from 'lucide-react'
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useDispatch, useSelector } from 'react-redux';
-import { loginUser } from '../features/user/authslice';
+import { loginUser } from '../features/user/authSlice';
 import { useNavigate } from 'react-router';
 import Alert from '@/components/ui/Alert'
 
@@ -12,7 +12,7 @@ const Login = () => {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [alert, setAlert] = useState(null); 
-    const { loading, error } = useSelector((state) => state.user)
+    const { loading, error } = useSelector((state) => state.auth)
 
     const dispatch = useDispatch()
     const navigate = useNavigate();

@@ -25,7 +25,7 @@ const EditContactForm = ({ contact, onClose, onSubmit }) => {
   const dispatch = useDispatch();
   const [errors, setErrors] = useState({});
   const [localLoading, setLocalLoading] = useState(false);
-  const user = useSelector(state => state.global.user)
+  const user = JSON.parse(localStorage.getItem("user"));
   const { loading, error, data } = useSelector((state) => state.user);
   const [users, setUsers] = useState([]);
   const [formData, setFormData] = useState({
@@ -36,7 +36,7 @@ const EditContactForm = ({ contact, onClose, onSubmit }) => {
     contact_type: contact.contact_type || "",
     email: contact.email || "",
     contact_number: contact.contact_number || "",
-    owner: contact.owner || "",
+    owner: contact.owner.num_id || "",
   });
 
 
@@ -59,7 +59,7 @@ const EditContactForm = ({ contact, onClose, onSubmit }) => {
       contact_type: contact.contact_type || "",
       email: contact.email || "",
       contact_number: contact.contact_number || "",
-      owner: contact.owner || "",
+      owner: contact.owner.num_id || "",
     });
   }, [contact]);
 
@@ -84,9 +84,11 @@ const handleSubmit = (e) => {
     setLocalLoading(true);
     try {
       contactSchema.parse(formData);
+      console.log(formData)
       onSubmit(formData);
     } catch (err) {
       if (err instanceof z.ZodError) {
+        setLocalLoading(false);
         const newErrors = err.errors.reduce((acc, { path, message }) => {
           acc[path[0]] = message;
           return acc;
@@ -184,7 +186,7 @@ const handleSubmit = (e) => {
           
         >
           <option value="customer">Customer</option>
-          <option value="prospect">Prospect</option>
+          <option value="partner">Partner</option>
           <option value="lead">Lead</option>
         </select>
         {errors.contact_type && <p className="text-red-500 text-xs">{errors.contact_type}</p>}
@@ -257,7 +259,7 @@ const handleSubmit = (e) => {
 
        <div className="flex justify-end">
         <button onClick={onClose} className="bg-gray-600 mx-4 hover:bg-gray-800 text-white px-3 py-2 w-48 rounded-md">Close</button>
-        <button type="submit" disabled={loading} className="bg-violet-600
+        <button type="submit" disabled={localLoading} className="bg-violet-600
         hover:bg-violet-900 text-white px-3 py-2 w-64 rounded-md flex flex-row justify-center align-middle disabled:bg-violet-200 disabled:text-gray-500"> 
              {localLoading ? (
                         <><LoaderCircle className="mr-2 h-6 w-6 animate-spin" />

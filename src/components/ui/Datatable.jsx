@@ -41,6 +41,11 @@ const DataTable = ({ data, columns, onRowClick, onFilterChange, onSort, inputVal
 
     // Render cells with conditional styling
     const renderCell = (header, value) => {
+        if (typeof value === 'boolean') {
+            return value ? "Yes" : "No";
+        }
+
+
         const content = header === 'priority' ? priorityText[value.toLowerCase()] || capitalizeContent(header, value) : capitalizeContent(header, value);
         if (headerStyles[header] && headerStyles[header][value.toLowerCase()]) {
             const styleClasses = headerStyles[header][value.toLowerCase()];
