@@ -127,7 +127,7 @@ export default function ContactDetailsPage() {
                     content={<EditContactForm contact={contactDetail} onClose={() => setShowEditModal(false)} onSubmit={handleEditContact} />}
                 />
 
-                <div className="container mx-auto my-6 p-4 space-y-6">
+                <div className="container mx-auto my-4 p-4 space-y-6 flex flex-col">
                     <h1 className="text-2xl font-bold text-gray-800">{contact.full_name}: {contact.title}</h1>
                     <Tabs defaultValue="details" onValueChange={(value) => handleTabChange(value)}>
                         {/* Tabs Header */}
@@ -185,7 +185,19 @@ export default function ContactDetailsPage() {
                                                 <p className="text-lg font-semibold text-gray-900">{records.length}</p>
                                             </Card>
                                         </div>
-
+                                            <div className="mt-6">
+                                                <h3 className="text-md font-semibold text-gray-700 mb-2">CRM Note</h3>
+                                               <div className="bg-gray-50 p-4 rounded-md border border-gray-200">
+                                                    <p className="text-sm text-gray-700 whitespace-pre-wrap">
+                                                       This is a sample note
+                                                    </p>
+                                                    <div className="flex justify-end mt-2">
+                                                        <button variant="ghost" size="sm">
+                                                        Edit Note
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
                                     </CardContent>
                                 )}
 
