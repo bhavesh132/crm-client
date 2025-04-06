@@ -4,7 +4,7 @@ import { CheckCircleIcon, SendIcon, LoaderCircle } from 'lucide-react'
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useDispatch, useSelector } from 'react-redux';
-import { loginUser } from '../features/user/authSlice';
+import { loginUser } from '@/features/user/authslice';
 import { useNavigate } from 'react-router';
 import Alert from '@/components/ui/Alert'
 
