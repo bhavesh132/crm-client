@@ -1,7 +1,7 @@
 import React from 'react'
 import { Outlet, useNavigate } from 'react-router'
 import { Link } from "react-router-dom"
-import { logoutUser } from './features/user/authSlice';
+import { logoutUser } from '@/features/user/authslice';
 import Cookies from 'js-cookie';
 import { useLocation } from 'react-router';
 import {
