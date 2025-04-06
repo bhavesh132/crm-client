@@ -1,5 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
-import authSlice from "@/features/user/authSlice.js";
+import authSlice from "@/features/user/authslice.js";
 import contactReducer from "../contacts/contactSlice";
 import paginationReducer from "../generics/paginationSlice"
 import auditReducer from "../audits/auditSlice"
